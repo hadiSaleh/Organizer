@@ -1,4 +1,4 @@
-package com.example.dinar.internshiporganizer.Entities;
+package com.internshiporganizer.Entities;
 
 import java.util.Date;
 

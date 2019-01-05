@@ -1,4 +1,4 @@
-package com.example.dinar.internshiporganizer;
+package com.internshiporganizer;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.example.dinar.internshiporganizer", appContext.getPackageName());
+        assertEquals("com.internshiporganizer", appContext.getPackageName());
     }
 }

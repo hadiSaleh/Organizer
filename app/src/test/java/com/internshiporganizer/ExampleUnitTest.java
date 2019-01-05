@@ -1,4 +1,4 @@
-package com.example.dinar.internshiporganizer;
+package com.internshiporganizer;
 
 import org.junit.Test;
 

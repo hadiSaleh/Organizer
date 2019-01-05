@@ -1,4 +1,4 @@
-package com.example.dinar.internshiporganizer.Entities;
+package com.internshiporganizer.Entities;
 
 public class Office {
     private long id;
