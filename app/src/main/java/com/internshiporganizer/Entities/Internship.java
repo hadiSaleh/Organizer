@@ -15,6 +15,8 @@ public class Internship {
 
     private String city;
 
+    private boolean isActive;
+
     public long getId() {
         return id;
     }
@@ -61,5 +63,13 @@ public class Internship {
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }

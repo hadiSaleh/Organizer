@@ -15,4 +15,7 @@
     <string name="tab_text_2">Tab 2</string>
     <string name="tab_text_3">Tab 3</string>
     <string name="section_format">Hello World from section: %1$d</string>
+    <string name="it_s_empty_here">It\'s empty here.</string>
+    <string name="active">Active</string>
+    <string name="closed">Closed</string>
 </resources>
