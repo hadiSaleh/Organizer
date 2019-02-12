@@ -9,15 +9,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.internshiporganizer.activities.InternshipActivity;
 import com.internshiporganizer.Adapters.InternshipsAdapter;
+import com.internshiporganizer.ApiClients.InternshipClient;
 import com.internshiporganizer.Entities.Internship;
 import com.internshiporganizer.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class InternshipsFragment extends ListFragment {
+public class InternshipsFragment extends ListFragment implements Updatable<Internship> {
     private InternshipsAdapter adapter;
     private ArrayList<Internship> internships;
+    private InternshipClient internshipClient;
 
     public InternshipsFragment() {
         // Required empty public constructor
@@ -26,6 +30,7 @@ public class InternshipsFragment extends ListFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        internshipClient = new InternshipClient(getContext(), this);
         loadInternships();
 
         FloatingActionButton fab = getView().findViewById(R.id.fabInternships);
@@ -43,13 +48,8 @@ public class InternshipsFragment extends ListFragment {
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         final Internship n = (Internship) adapter.getItem(position);
-    }
-
-    private void loadInternships(){
-        internships = new ArrayList<>();
-        adapter = new InternshipsAdapter(getActivity(), internships);
-        setListAdapter(adapter);
-        // TODO api call
+        Intent intent = new Intent(getActivity(),InternshipActivity.class);
+        startActivity(intent);
     }
 
     @Override
@@ -57,5 +57,19 @@ public class InternshipsFragment extends ListFragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_internships, container, false);
+    }
+
+    @Override
+    public void updateList(List<Internship> items) {
+        internships.addAll(items);
+        adapter.notifyDataSetChanged();
+    }
+
+    private void loadInternships() {
+        internships = new ArrayList<>();
+        adapter = new InternshipsAdapter(getActivity(), internships);
+        setListAdapter(adapter);
+
+        internshipClient.GetAllForEmployee(123);
     }
 }

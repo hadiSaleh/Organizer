@@ -24,4 +24,8 @@
     <string name="password">Password</string>
     <string name="enter">Enter</string>
     <string name="login">Login</string>
+    <string name="message">Message</string>
+    <string name="you">You</string>
+    <string name="enter_your_message">Enter your message</string>
+    <string name="d">d</string>
 </resources>

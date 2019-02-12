@@ -50,8 +50,8 @@ public class InternshipsAdapter extends BaseAdapter {
         ((TextView) view.findViewById(R.id.internshipTitle)).setText(internship.getTitle());
         ((TextView) view.findViewById(R.id.internshipDescription)).setText(internship.getDescription());
         TextView tv = view.findViewById(R.id.internshipCondition);
-        if (internship.isActive()) {
-            tv.setText(R.string.closed);
+        if (internship.getActive()) {
+            tv.setText(R.string.active);
             tv.setTextColor(Color.parseColor("#0277bd"));
         } else{
             tv.setText(R.string.closed);

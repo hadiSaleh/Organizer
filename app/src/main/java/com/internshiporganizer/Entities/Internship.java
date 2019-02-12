@@ -15,7 +15,7 @@ public class Internship {
 
     private String city;
 
-    private boolean isActive;
+    private boolean active;
 
     public long getId() {
         return id;
@@ -65,11 +65,11 @@ public class Internship {
         this.city = city;
     }
 
-    public boolean isActive() {
-        return isActive;
+    public boolean getActive() {
+        return active;
     }
 
     public void setActive(boolean active) {
-        isActive = active;
+        this.active = active;
     }
 }
