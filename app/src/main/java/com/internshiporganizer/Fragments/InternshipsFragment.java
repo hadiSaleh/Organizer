@@ -70,6 +70,6 @@ public class InternshipsFragment extends ListFragment implements Updatable<Inter
         adapter = new InternshipsAdapter(getActivity(), internships);
         setListAdapter(adapter);
 
-        internshipClient.GetAllForEmployee(123);
+        internshipClient.getAllByEmployee(123);
     }
 }

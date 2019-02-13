@@ -28,4 +28,7 @@
     <string name="you">You</string>
     <string name="enter_your_message">Enter your message</string>
     <string name="d">d</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="state">state</string>
 </resources>

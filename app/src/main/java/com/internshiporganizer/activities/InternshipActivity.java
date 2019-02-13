@@ -29,6 +29,7 @@ public class InternshipActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setElevation(0);
+        getSupportActionBar().setTitle("Internship title");
     }
 
     private void setupViewPager(ViewPager viewPager) {

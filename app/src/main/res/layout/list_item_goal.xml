@@ -11,7 +11,7 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/internshipTitle"
+            android:id="@+id/goalTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
@@ -24,7 +24,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/internshipCondition"
+            android:id="@+id/goalCondition"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="8dp"
@@ -35,7 +35,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/internshipDescription"
+            android:id="@+id/goalDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="8dp"
@@ -43,7 +43,7 @@
             android:layout_marginTop="0dp"
             android:text="@string/description"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/internshipTitle" />
+            app:layout_constraintTop_toBottomOf="@+id/goalTitle" />
     </android.support.constraint.ConstraintLayout>
 
 </android.support.v7.widget.CardView>

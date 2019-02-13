@@ -2,7 +2,7 @@ package com.internshiporganizer.Entities;
 
 import java.util.Date;
 
-public class InternshipGoal {
+public class Goal {
     private long id;
 
     private Internship internship;
@@ -15,7 +15,7 @@ public class InternshipGoal {
 
     private String place;
 
-    private boolean isCompleted;
+    private boolean completed;
 
     private Date deadline;
 
@@ -67,12 +67,12 @@ public class InternshipGoal {
         this.place = place;
     }
 
-    public boolean isCompleted() {
-        return isCompleted;
+    public boolean getCompleted() {
+        return completed;
     }
 
     public void setCompleted(boolean completed) {
-        isCompleted = completed;
+        this.completed = completed;
     }
 
     public Date getDeadline() {

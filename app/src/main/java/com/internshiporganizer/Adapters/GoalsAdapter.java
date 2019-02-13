@@ -8,17 +8,17 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.internshiporganizer.Entities.Internship;
+import com.internshiporganizer.Entities.Goal;
 import com.internshiporganizer.R;
 
 import java.util.ArrayList;
 
-public class InternshipsAdapter extends BaseAdapter {
+public class GoalsAdapter extends BaseAdapter {
     private LayoutInflater lInflater;
-    private ArrayList<Internship> objects;
+    private ArrayList<Goal> objects;
 
-    public InternshipsAdapter(Context context, ArrayList<Internship> internships) {
-        objects = internships;
+    public GoalsAdapter(Context context, ArrayList<Goal> goals) {
+        objects = goals;
         lInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -42,15 +42,15 @@ public class InternshipsAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
         if (view == null) {
-            view = lInflater.inflate(R.layout.list_item_internship, parent, false);
+            view = lInflater.inflate(R.layout.list_item_goal, parent, false);
         }
 
-        Internship internship = getInternship(position);
+        Goal goal = getGoal(position);
 
-        ((TextView) view.findViewById(R.id.internshipTitle)).setText(internship.getTitle());
-        ((TextView) view.findViewById(R.id.internshipDescription)).setText(internship.getDescription());
-        TextView tv = view.findViewById(R.id.internshipCondition);
-        if (internship.getActive()) {
+        ((TextView) view.findViewById(R.id.goalTitle)).setText(goal.getTitle());
+        ((TextView) view.findViewById(R.id.goalDescription)).setText(goal.getDescription());
+        TextView tv = view.findViewById(R.id.goalCondition);
+        if (!goal.getCompleted()) {
             tv.setText(R.string.active);
             tv.setTextColor(Color.parseColor("#0277bd"));
         } else{
@@ -61,7 +61,7 @@ public class InternshipsAdapter extends BaseAdapter {
         return view;
     }
 
-    private Internship getInternship(int position) {
-        return ((Internship) getItem(position));
+    private Goal getGoal(int position) {
+        return ((Goal) getItem(position));
     }
 }

@@ -11,33 +11,27 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.internshiporganizer.Entities.Internship;
-import com.internshiporganizer.Fragments.InternshipsFragment;
+import com.internshiporganizer.Entities.Goal;
 import com.internshiporganizer.Fragments.Updatable;
 
 import org.json.JSONArray;
 
 import java.util.List;
 
-public class InternshipClient extends BaseClient {
-    private static final String internshipsUrl = "/internships";
+public class GoalClient extends BaseClient {
+    private static final String goalsUrl = "/goals";
     private RequestQueue queue;
     private Context context;
-    private Updatable<Internship> fragment;
+    private Updatable<Goal> fragment;
 
-    public InternshipClient(Context context, Updatable<Internship> fragment) {
+    public GoalClient(Context context, Updatable<Goal> fragment) {
         this.context = context;
         this.fragment = fragment;
         queue = Volley.newRequestQueue(context);
     }
 
-    public void getAllByEmployee(long employeeId) {
-        String url = baseUrl + internshipsUrl;
-        get(employeeId, url);
-    }
-
-    public void getAllByAdministrator(long employeeId) {
-        String url = baseUrl + internshipsUrl;
+    public void getAllByEmployeeAndInternship(long employeeId, long internshipId) {
+        String url = baseUrl + goalsUrl;
         get(employeeId, url);
     }
 
@@ -46,7 +40,7 @@ public class InternshipClient extends BaseClient {
             @Override
             public void onResponse(JSONArray response) {
                 Gson gson = new Gson();
-                List<Internship> list = gson.fromJson(response.toString(), new TypeToken<List<Internship>>() {
+                List<Goal> list = gson.fromJson(response.toString(), new TypeToken<List<Goal>>() {
                 }.getType());
                 fragment.updateList(list);
             }
@@ -55,7 +49,7 @@ public class InternshipClient extends BaseClient {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(context, "Cannot load internships", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Cannot load goals", Toast.LENGTH_SHORT).show();
             }
         });
 
