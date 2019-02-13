@@ -15,12 +15,15 @@ import com.internshiporganizer.R;
 public class InternshipActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private String internshipTitle;
+    private long internshipId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_internship);
-//        setResult(RESULT_OK, null);
+        internshipTitle = getIntent().getStringExtra("internshipTitle");
+        internshipId = getIntent().getLongExtra("internshipId",-1);
 
         viewPager = findViewById(R.id.viewpager);
         setupViewPager(viewPager);
@@ -29,7 +32,7 @@ public class InternshipActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setElevation(0);
-        getSupportActionBar().setTitle("Internship title");
+        getSupportActionBar().setTitle(internshipTitle);
     }
 
     private void setupViewPager(ViewPager viewPager) {
@@ -40,6 +43,7 @@ public class InternshipActivity extends AppCompatActivity {
 
         GoalsFragment goalsFragment = new GoalsFragment();
         adapter.addFragment(goalsFragment, "Goals");
+        goalsFragment.setInternshipTitle(internshipTitle);
 
         ChatFragment chatFragment = new ChatFragment();
         adapter.addFragment(chatFragment, "Chat");

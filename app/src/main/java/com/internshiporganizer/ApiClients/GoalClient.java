@@ -32,17 +32,22 @@ public class GoalClient extends BaseClient {
 
     public void getAllByEmployeeAndInternship(long employeeId, long internshipId) {
         String url = baseUrl + goalsUrl;
-        get(employeeId, url);
+        get(url);
     }
 
-    private void get(long employeeId, String url) {
+    public void getById(long id){
+        String url = baseUrl + goalsUrl;
+        get(url);
+    }
+
+    private void get(String url) {
         JsonArrayRequest jsObjRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 Gson gson = new Gson();
                 List<Goal> list = gson.fromJson(response.toString(), new TypeToken<List<Goal>>() {
                 }.getType());
-                fragment.updateList(list);
+                fragment.update(list);
             }
 
         }, new Response.ErrorListener() {

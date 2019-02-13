@@ -12,7 +12,6 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.internshiporganizer.Entities.Internship;
-import com.internshiporganizer.Fragments.InternshipsFragment;
 import com.internshiporganizer.Fragments.Updatable;
 
 import org.json.JSONArray;
@@ -33,22 +32,22 @@ public class InternshipClient extends BaseClient {
 
     public void getAllByEmployee(long employeeId) {
         String url = baseUrl + internshipsUrl;
-        get(employeeId, url);
+        get(url);
     }
 
     public void getAllByAdministrator(long employeeId) {
         String url = baseUrl + internshipsUrl;
-        get(employeeId, url);
+        get(url);
     }
 
-    private void get(long employeeId, String url) {
+    private void get(String url) {
         JsonArrayRequest jsObjRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 Gson gson = new Gson();
                 List<Internship> list = gson.fromJson(response.toString(), new TypeToken<List<Internship>>() {
                 }.getType());
-                fragment.updateList(list);
+                fragment.update(list);
             }
 
         }, new Response.ErrorListener() {

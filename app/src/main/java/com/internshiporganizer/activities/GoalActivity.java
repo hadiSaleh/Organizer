@@ -4,20 +4,32 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
 
+import com.internshiporganizer.ApiClients.GoalClient;
+import com.internshiporganizer.Entities.Goal;
+import com.internshiporganizer.Fragments.Updatable;
 import com.internshiporganizer.R;
 
-public class GoalActivity extends AppCompatActivity {
+import java.util.List;
+
+public class GoalActivity extends AppCompatActivity implements Updatable<Goal> {
+    private long goalId;
+    private String internshipTitle;
+    private GoalClient goalClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_goal);
 
+        goalId = getIntent().getLongExtra("goalId", -1);
+        internshipTitle = getIntent().getStringExtra("internshipTitle");
+        goalClient = new GoalClient(getApplicationContext(),this);
+        loadGoal();
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setElevation(0);
-        getSupportActionBar().setTitle("Goal title");
+        getSupportActionBar().setTitle(internshipTitle);
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -28,5 +40,14 @@ public class GoalActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void update(List<Goal> items) {
+
+    }
+
+    private void loadGoal() {
+        //goalClient.getById(goalId);
     }
 }

@@ -4,7 +4,6 @@ package com.internshiporganizer.Fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +23,7 @@ public class GoalsFragment extends ListFragment implements Updatable<Goal> {
     private GoalsAdapter adapter;
     private ArrayList<Goal> goals;
     private GoalClient goalClient;
+    private String internshipTitle;
 
     public GoalsFragment() {
         // Required empty public constructor
@@ -49,8 +49,10 @@ public class GoalsFragment extends ListFragment implements Updatable<Goal> {
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        final Goal g = (Goal) adapter.getItem(position);
+        final Goal goal = (Goal) adapter.getItem(position);
         Intent intent = new Intent(getActivity(),GoalActivity.class);
+        intent.putExtra("goalId", goal.getId());
+        intent.putExtra("internshipTitle", internshipTitle);
         startActivity(intent);
     }
 
@@ -62,9 +64,13 @@ public class GoalsFragment extends ListFragment implements Updatable<Goal> {
     }
 
     @Override
-    public void updateList(List<Goal> items) {
+    public void update(List<Goal> items) {
         goals.addAll(items);
         adapter.notifyDataSetChanged();
+    }
+
+    public void setInternshipTitle(String internshipTitle) {
+        this.internshipTitle = internshipTitle;
     }
 
     private void loadGoals() {

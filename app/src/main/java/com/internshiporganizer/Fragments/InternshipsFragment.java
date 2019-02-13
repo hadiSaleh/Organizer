@@ -47,8 +47,11 @@ public class InternshipsFragment extends ListFragment implements Updatable<Inter
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        final Internship n = (Internship) adapter.getItem(position);
+        final Internship internship = (Internship) adapter.getItem(position);
         Intent intent = new Intent(getActivity(),InternshipActivity.class);
+        intent.putExtra("internshipTitle", internship.getTitle());
+        intent.putExtra("internshipId", internship.getId());
+
         startActivity(intent);
     }
 
@@ -60,7 +63,7 @@ public class InternshipsFragment extends ListFragment implements Updatable<Inter
     }
 
     @Override
-    public void updateList(List<Internship> items) {
+    public void update(List<Internship> items) {
         internships.addAll(items);
         adapter.notifyDataSetChanged();
     }

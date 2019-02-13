@@ -31,4 +31,5 @@
     <string name="title">Title</string>
     <string name="description">Description</string>
     <string name="state">state</string>
+    <string name="place">Place</string>
 </resources>
