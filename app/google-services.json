@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "459092488775",
+    "firebase_url": "https://internshiporganizer.firebaseio.com",
+    "project_id": "internshiporganizer",
+    "storage_bucket": "internshiporganizer.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:459092488775:android:420fdd597132c410",
+        "android_client_info": {
+          "package_name": "com.internshiporganizer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "459092488775-qi18pr3nq9tk3a46op8uqgtg3aq9ckrb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBaPa7njXucP_X3NN8FT226PBfiPUh8xUY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

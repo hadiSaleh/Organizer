@@ -12,7 +12,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.internshiporganizer.Entities.Goal;
-import com.internshiporganizer.Fragments.Updatable;
+import com.internshiporganizer.Updatable;
 
 import org.json.JSONArray;
 
@@ -22,11 +22,11 @@ public class GoalClient extends BaseClient {
     private static final String goalsUrl = "/goals";
     private RequestQueue queue;
     private Context context;
-    private Updatable<Goal> fragment;
+    private Updatable<List<Goal>> updatable;
 
-    public GoalClient(Context context, Updatable<Goal> fragment) {
+    public GoalClient(Context context, Updatable<List<Goal>> updatable) {
         this.context = context;
-        this.fragment = fragment;
+        this.updatable = updatable;
         queue = Volley.newRequestQueue(context);
     }
 
@@ -47,7 +47,7 @@ public class GoalClient extends BaseClient {
                 Gson gson = new Gson();
                 List<Goal> list = gson.fromJson(response.toString(), new TypeToken<List<Goal>>() {
                 }.getType());
-                fragment.update(list);
+                updatable.update(list);
             }
 
         }, new Response.ErrorListener() {

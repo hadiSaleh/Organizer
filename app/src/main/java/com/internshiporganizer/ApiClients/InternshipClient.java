@@ -12,7 +12,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.internshiporganizer.Entities.Internship;
-import com.internshiporganizer.Fragments.Updatable;
+import com.internshiporganizer.Updatable;
 
 import org.json.JSONArray;
 
@@ -22,9 +22,9 @@ public class InternshipClient extends BaseClient {
     private static final String internshipsUrl = "/internships";
     private RequestQueue queue;
     private Context context;
-    private Updatable<Internship> fragment;
+    private Updatable<List<Internship>> fragment;
 
-    public InternshipClient(Context context, Updatable<Internship> fragment) {
+    public InternshipClient(Context context, Updatable<List<Internship>> fragment) {
         this.context = context;
         this.fragment = fragment;
         queue = Volley.newRequestQueue(context);

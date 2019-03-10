@@ -6,12 +6,12 @@ import android.view.MenuItem;
 
 import com.internshiporganizer.ApiClients.GoalClient;
 import com.internshiporganizer.Entities.Goal;
-import com.internshiporganizer.Fragments.Updatable;
+import com.internshiporganizer.Updatable;
 import com.internshiporganizer.R;
 
 import java.util.List;
 
-public class GoalActivity extends AppCompatActivity implements Updatable<Goal> {
+public class GoalActivity extends AppCompatActivity implements Updatable<List<Goal>> {
     private long goalId;
     private String internshipTitle;
     private GoalClient goalClient;

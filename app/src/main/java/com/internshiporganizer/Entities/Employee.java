@@ -3,6 +3,8 @@ package com.internshiporganizer.Entities;
 public class Employee {
     private long id;
 
+    private String email;
+
     private String firstName;
 
     private String lastName;
@@ -49,5 +51,13 @@ public class Employee {
 
     public void setOffice(Office office) {
         this.office = office;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

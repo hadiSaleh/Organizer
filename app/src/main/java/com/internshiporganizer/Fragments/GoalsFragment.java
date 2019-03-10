@@ -14,12 +14,13 @@ import com.internshiporganizer.Adapters.GoalsAdapter;
 import com.internshiporganizer.ApiClients.GoalClient;
 import com.internshiporganizer.Entities.Goal;
 import com.internshiporganizer.R;
+import com.internshiporganizer.Updatable;
 import com.internshiporganizer.activities.GoalActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GoalsFragment extends ListFragment implements Updatable<Goal> {
+public class GoalsFragment extends ListFragment implements Updatable<List<Goal>> {
     private GoalsAdapter adapter;
     private ArrayList<Goal> goals;
     private GoalClient goalClient;

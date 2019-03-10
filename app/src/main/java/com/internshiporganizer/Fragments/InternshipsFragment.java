@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.internshiporganizer.Updatable;
 import com.internshiporganizer.activities.InternshipActivity;
 import com.internshiporganizer.Adapters.InternshipsAdapter;
 import com.internshiporganizer.ApiClients.InternshipClient;
@@ -18,7 +19,7 @@ import com.internshiporganizer.R;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InternshipsFragment extends ListFragment implements Updatable<Internship> {
+public class InternshipsFragment extends ListFragment implements Updatable<List<Internship>> {
     private InternshipsAdapter adapter;
     private ArrayList<Internship> internships;
     private InternshipClient internshipClient;
@@ -48,7 +49,7 @@ public class InternshipsFragment extends ListFragment implements Updatable<Inter
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         final Internship internship = (Internship) adapter.getItem(position);
-        Intent intent = new Intent(getActivity(),InternshipActivity.class);
+        Intent intent = new Intent(getActivity(), InternshipActivity.class);
         intent.putExtra("internshipTitle", internship.getTitle());
         intent.putExtra("internshipId", internship.getId());
 
@@ -73,6 +74,14 @@ public class InternshipsFragment extends ListFragment implements Updatable<Inter
         adapter = new InternshipsAdapter(getActivity(), internships);
         setListAdapter(adapter);
 
-        internshipClient.getAllByEmployee(123);
+        Internship internship = new Internship();
+        internship.setActive(true);
+        internship.setDescription("Some description");
+        internship.setTitle("Internship title");
+        internship.setId(123);
+
+        internships.add(internship);
+        adapter.notifyDataSetChanged();
+        //internshipClient.getAllByEmployee(123);
     }
 }
