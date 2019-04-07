@@ -1,6 +1,9 @@
 package com.internshiporganizer.Fragments;
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ListFragment;
@@ -9,12 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.internshiporganizer.Constants;
 import com.internshiporganizer.Updatable;
 import com.internshiporganizer.activities.InternshipActivity;
 import com.internshiporganizer.Adapters.InternshipsAdapter;
 import com.internshiporganizer.ApiClients.InternshipClient;
 import com.internshiporganizer.Entities.Internship;
 import com.internshiporganizer.R;
+import com.internshiporganizer.activities.InternshipCreationActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +28,8 @@ public class InternshipsFragment extends ListFragment implements Updatable<List<
     private InternshipsAdapter adapter;
     private ArrayList<Internship> internships;
     private InternshipClient internshipClient;
+    private SharedPreferences sharedPreferences;
+    private FloatingActionButton fab;
 
     public InternshipsFragment() {
         // Required empty public constructor
@@ -31,19 +38,11 @@ public class InternshipsFragment extends ListFragment implements Updatable<List<
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        sharedPreferences = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         internshipClient = new InternshipClient(getContext(), this);
         loadInternships();
 
-        FloatingActionButton fab = getView().findViewById(R.id.fabInternships);
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //TODO go to create
-//                Intent intent = new Intent(getActivity(), NoteCreatingActivity.class);
-//                startActivity(intent);
-            }
-        });
+        setFAB();
     }
 
     @Override
@@ -69,6 +68,22 @@ public class InternshipsFragment extends ListFragment implements Updatable<List<
         adapter.notifyDataSetChanged();
     }
 
+    private void setFAB() {
+        fab = getView().findViewById(R.id.fabInternships);
+        boolean administrator = sharedPreferences.getBoolean(Constants.IS_ADMINISTRATOR,false);
+        if(!administrator){
+            hideFAB();
+        }
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO go to create
+                Intent intent = new Intent(getActivity(), InternshipCreationActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
     private void loadInternships() {
         internships = new ArrayList<>();
         adapter = new InternshipsAdapter(getActivity(), internships);
@@ -83,5 +98,10 @@ public class InternshipsFragment extends ListFragment implements Updatable<List<
         internships.add(internship);
         adapter.notifyDataSetChanged();
         //internshipClient.getAllByEmployee(123);
+    }
+
+    @SuppressLint("RestrictedApi")
+    private void hideFAB() {
+        fab.setVisibility(View.GONE);
     }
 }

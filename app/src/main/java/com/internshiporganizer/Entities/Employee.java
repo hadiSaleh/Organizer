@@ -13,6 +13,8 @@ public class Employee {
 
     private Office office;
 
+    private boolean administrator;
+
     public long getId() {
         return id;
     }
@@ -59,5 +61,13 @@ public class Employee {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public boolean getAdministrator() {
+        return administrator;
+    }
+
+    public void setAdministrator(boolean administrator) {
+        this.administrator = administrator;
     }
 }

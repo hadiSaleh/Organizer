@@ -4,7 +4,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.internshiporganizer"
-        minSdkVersion 15
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
         versionName "1.0"
@@ -31,6 +31,7 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-core:2.9.6'
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.9.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.6'
+    implementation 'de.hdodenhof:circleimageview:2.1.0'
     implementation 'commons-codec:commons-codec:1.9'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

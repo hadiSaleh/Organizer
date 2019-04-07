@@ -13,11 +13,11 @@ import com.internshiporganizer.R;
 
 import java.util.ArrayList;
 
-public class GoalsAdapter extends BaseAdapter {
+public class GoalAdapter extends BaseAdapter {
     private LayoutInflater lInflater;
     private ArrayList<Goal> objects;
 
-    public GoalsAdapter(Context context, ArrayList<Goal> goals) {
+    public GoalAdapter(Context context, ArrayList<Goal> goals) {
         objects = goals;
         lInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);

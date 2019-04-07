@@ -20,9 +20,6 @@ import com.internshiporganizer.Updatable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Map;
-
 
 public class AuthCredentialsClient extends BaseClient {
     private static final String authUrl = "auth";
@@ -36,7 +33,7 @@ public class AuthCredentialsClient extends BaseClient {
         queue = Volley.newRequestQueue(context);
     }
 
-    public void tryToLogin(AuthCredentials authCredentials) {
+    public void tryLogin(AuthCredentials authCredentials) {
         String url = baseUrl + authUrl;
         login(url, authCredentials);
     }
@@ -50,14 +47,6 @@ public class AuthCredentialsClient extends BaseClient {
             e.printStackTrace();
             return;
         }
-
-//        jsonObject = new JSONObject();
-//        try {
-//            jsonObject.put("email", "test@test.test");
-//            jsonObject.put("passwordHash", "A665A45920422F9D417E4867EFDC4FB8A04A1F3FFF1FA07E998E86F7F7A27AE3");
-//        } catch (JSONException e) {
-//            e.printStackTrace();
-//        }
 
         JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject, new Response.Listener<JSONObject>() {
             @Override
@@ -74,17 +63,7 @@ public class AuthCredentialsClient extends BaseClient {
                 VolleyLog.e("Error: ", error.getMessage());
                 Toast.makeText(context, "Cannot auth", Toast.LENGTH_SHORT).show();
             }
-        }){
-//            @Override
-//            public Map<String, String> getHeaders() throws AuthFailureError {
-//                HashMap<String, String> headers = new HashMap<String, String>();
-//                return headers;
-//            }
-//            @Override
-//            public String getBodyContentType() {
-//                return "application/json";
-//            }
-        };
+        });
 
         queue.add(jsObjRequest);
     }

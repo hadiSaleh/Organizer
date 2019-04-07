@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.internshiporganizer.Adapters.GoalsAdapter;
+import com.internshiporganizer.Adapters.GoalAdapter;
 import com.internshiporganizer.ApiClients.GoalClient;
 import com.internshiporganizer.Entities.Goal;
 import com.internshiporganizer.R;
@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GoalsFragment extends ListFragment implements Updatable<List<Goal>> {
-    private GoalsAdapter adapter;
+    private GoalAdapter adapter;
     private ArrayList<Goal> goals;
     private GoalClient goalClient;
     private String internshipTitle;
@@ -76,7 +76,7 @@ public class GoalsFragment extends ListFragment implements Updatable<List<Goal>>
 
     private void loadGoals() {
         goals = new ArrayList<>();
-        adapter = new GoalsAdapter(getActivity(), goals);
+        adapter = new GoalAdapter(getActivity(), goals);
         setListAdapter(adapter);
 
         Goal goal = new Goal();

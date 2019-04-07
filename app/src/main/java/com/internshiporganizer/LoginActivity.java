@@ -1,7 +1,9 @@
 package com.internshiporganizer;
 
 import android.accessibilityservice.GestureDescription;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -20,6 +22,9 @@ public class LoginActivity extends AppCompatActivity implements Updatable<Employ
     private EditText activityLogin_editTextMail;
     private EditText activityLogin_editTextPassword;
     private Button enterButton;
+    private SharedPreferences sharedPreferences;
+    private String email;
+    private String passwordHash;
 
     private AuthCredentialsClient authCredentialsClient;
 
@@ -34,33 +39,60 @@ public class LoginActivity extends AppCompatActivity implements Updatable<Employ
         activityLogin_editTextMail = findViewById(R.id.activityLogin_editTextMail);
         activityLogin_editTextPassword = findViewById(R.id.activityLogin_editTextPassword);
 
+        sharedPreferences = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        checkPreferences();
+
         enterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tryToLogin();
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                startActivity(intent);
+                email = activityLogin_editTextMail.getText().toString();
+                String password = activityLogin_editTextPassword.getText().toString();
+                passwordHash = new String(Hex.encodeHex(DigestUtils.sha256(password)));
+                tryLogin();
             }
         });
     }
 
-    private void tryToLogin() {
-        String email = activityLogin_editTextMail.getText().toString();
-        String password = activityLogin_editTextPassword.getText().toString();
+    @Override
+    public void update(Employee employee) {
+        Toast.makeText(getApplicationContext(), "Logged in successfully", Toast.LENGTH_SHORT).show();
+        sharedPreferences.edit()
+                .putString(Constants.EMAIL, email)
+                .putString(Constants.PASSWORD_HASH, passwordHash)
+                .putBoolean(Constants.IS_ADMINISTRATOR,employee.getAdministrator())
+                .putLong(Constants.ID, employee.getId()).apply();
 
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(intent);
+    }
+
+    private void checkPreferences() {
+        if (!sharedPreferences.contains(Constants.EMAIL)) {
+            return;
+        }
+        if (!sharedPreferences.contains(Constants.PASSWORD_HASH)) {
+            return;
+        }
+        if (!sharedPreferences.contains(Constants.IS_ADMINISTRATOR)) {
+            return;
+        }
+        if (!sharedPreferences.contains(Constants.ID)) {
+            return;
+        }
+
+        email = sharedPreferences.getString(Constants.EMAIL, "");
+        passwordHash = sharedPreferences.getString(Constants.PASSWORD_HASH, "");
+        tryLogin();
+    }
+
+    private void tryLogin() {
         email = "test@test.test";
-        password = "123";
+        passwordHash = "A665A45920422F9D417E4867EFDC4FB8A04A1F3FFF1FA07E998E86F7F7A27AE3";
 
         AuthCredentials authCredentials = new AuthCredentials();
         authCredentials.setEmail(email);
-        String hash = new String(Hex.encodeHex(DigestUtils.sha256(password)));
-        authCredentials.setPasswordHash(hash.toUpperCase());
+        authCredentials.setPasswordHash(passwordHash.toUpperCase());
 
-        authCredentialsClient.tryToLogin(authCredentials);
-    }
-
-    @Override
-    public void update(Employee employee) {
-        Toast.makeText(getApplicationContext(), "NAIS", Toast.LENGTH_SHORT).show();
+        authCredentialsClient.tryLogin(authCredentials);
     }
 }

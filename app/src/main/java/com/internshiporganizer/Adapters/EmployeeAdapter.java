@@ -13,11 +13,11 @@ import com.internshiporganizer.R;
 
 import java.util.ArrayList;
 
-public class EmployeesAdapter extends BaseAdapter {
+public class EmployeeAdapter extends BaseAdapter {
     private LayoutInflater lInflater;
     private ArrayList<Employee> objects;
 
-    public EmployeesAdapter(Context context, ArrayList<Employee> employees) {
+    public EmployeeAdapter(Context context, ArrayList<Employee> employees) {
         objects = employees;
         lInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
