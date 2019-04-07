@@ -11,32 +11,27 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.internshiporganizer.Entities.Goal;
+import com.internshiporganizer.Entities.InternshipParticipant;
 import com.internshiporganizer.Updatable;
 
 import org.json.JSONArray;
 
 import java.util.List;
 
-public class GoalClient extends BaseClient {
-    private static final String goalsUrl = "/goals";
+public class InternshipParticipantsClient extends BaseClient {
+    private static final String internshipParticipantsUrl = "internshipParticipants";
     private RequestQueue queue;
     private Context context;
-    private Updatable<List<Goal>> updatable;
+    private Updatable<List<InternshipParticipant>> updatable;
 
-    public GoalClient(Context context, Updatable<List<Goal>> updatable) {
+    public InternshipParticipantsClient(Context context, Updatable<List<InternshipParticipant>> updatable) {
         this.context = context;
         this.updatable = updatable;
         queue = Volley.newRequestQueue(context);
     }
 
-    public void getAllByEmployeeAndInternship(long employeeId, long internshipId) {
-        String url = baseUrl + goalsUrl;
-        get(url);
-    }
-
-    public void getById(long id){
-        String url = baseUrl + goalsUrl;
+    public void getAllByInternship(long internshipId) {
+        String url = baseUrl + internshipParticipantsUrl;
         get(url);
     }
 
@@ -45,19 +40,17 @@ public class GoalClient extends BaseClient {
             @Override
             public void onResponse(JSONArray response) {
                 Gson gson = new Gson();
-                List<Goal> list = gson.fromJson(response.toString(), new TypeToken<List<Goal>>() {
+                List<InternshipParticipant> list = gson.fromJson(response.toString(), new TypeToken<List<InternshipParticipant>>() {
                 }.getType());
 
-                if (updatable != null) {
-                    updatable.update(list);
-                }
+                updatable.update(list);
             }
 
         }, new Response.ErrorListener() {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(context, "Cannot load goals", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Cannot load internship participant", Toast.LENGTH_SHORT).show();
             }
         });
 

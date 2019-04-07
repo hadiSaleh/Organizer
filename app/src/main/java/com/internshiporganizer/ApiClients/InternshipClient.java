@@ -72,7 +72,7 @@ public class InternshipClient extends BaseClient {
         queue.add(jsObjRequest);
     }
 
-    private void create(String url, Internship newInternship){
+    private void create(String url, Internship newInternship) {
         final Gson gson = new Gson();
         JSONObject jsonObject;
         try {
@@ -90,7 +90,9 @@ public class InternshipClient extends BaseClient {
                 ArrayList<Internship> arrayList = new ArrayList<>();
                 arrayList.add(internship);
 
-                updatable.update(arrayList);
+                if (updatable != null) {
+                    updatable.update(arrayList);
+                }
             }
 
         }, new Response.ErrorListener() {

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -46,6 +47,11 @@ public class EmployeeCheckableAdapter extends BaseAdapter {
         if (view == null) {
             view = lInflater.inflate(R.layout.list_item_employee_checkable, parent, false);
         }
+
+        CheckBox checkBox = view.findViewById(R.id.checkBox);
+        checkBox.setOnCheckedChangeListener(myCheckChangeList);
+        checkBox.setTag(position);
+        checkBox.setChecked(false);
 
         final ImageView photoIV = view.findViewById(R.id.imageView);
         photoIV.setImageResource(R.drawable.kiki);

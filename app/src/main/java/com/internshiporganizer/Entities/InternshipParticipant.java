@@ -7,7 +7,7 @@ public class InternshipParticipant {
 
     private Employee employee;
 
-    private boolean isAdmin;
+    private boolean admin;
 
     public long getId() {
         return id;
@@ -33,11 +33,11 @@ public class InternshipParticipant {
         this.employee = employee;
     }
 
-    public boolean isAdmin() {
-        return isAdmin;
+    public boolean getAdmin() {
+        return admin;
     }
 
-    public void setAdmin(boolean isAdmin) {
-        this.isAdmin = isAdmin;
+    public void setAdmin(boolean admin) {
+        this.admin = admin;
     }
 }

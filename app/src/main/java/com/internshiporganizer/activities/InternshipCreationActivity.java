@@ -2,8 +2,6 @@ package com.internshiporganizer.activities;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.MenuItem;
@@ -16,9 +14,7 @@ import android.widget.Toast;
 
 import com.internshiporganizer.R;
 
-import java.time.LocalDate;
 import java.util.Calendar;
-import java.util.Date;
 
 public class InternshipCreationActivity extends AppCompatActivity {
     private EditText titleET;

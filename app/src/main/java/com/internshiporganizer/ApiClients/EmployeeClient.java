@@ -11,35 +11,28 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.internshiporganizer.Entities.Internship;
-import com.internshiporganizer.Entities.InternshipParticipant;
+import com.internshiporganizer.Entities.Employee;
 import com.internshiporganizer.Updatable;
 
 import org.json.JSONArray;
 
 import java.util.List;
 
-public class InternshipParticipantClient extends BaseClient {
-    private static final String internshipParticipantsUrl = "internshipParticipants";
+public class EmployeeClient extends BaseClient {
+    private static final String internshipsUrl = "employees";
     private RequestQueue queue;
     private Context context;
-    private Updatable<List<InternshipParticipant>> updatable;
+    private Updatable<List<Employee>> updatable;
 
-    public InternshipParticipantClient(Context context, Updatable<List<InternshipParticipant>> updatable) {
+    public EmployeeClient(Context context, Updatable<List<Employee>> updatable) {
         this.context = context;
         this.updatable = updatable;
         queue = Volley.newRequestQueue(context);
     }
 
-    public void getAllByInternship(long internshipId) {
-        String url = baseUrl + internshipParticipantsUrl;
+    public void get() {
+        String url = baseUrl + internshipsUrl;
         get(url);
-    }
-
-    public void add(InternshipParticipant internshipParticipant) {
-        String url = baseUrl + internshipParticipantsUrl;
-
-        add(url, internshipParticipant);
     }
 
     private void get(String url) {
@@ -47,7 +40,7 @@ public class InternshipParticipantClient extends BaseClient {
             @Override
             public void onResponse(JSONArray response) {
                 Gson gson = new Gson();
-                List<InternshipParticipant> list = gson.fromJson(response.toString(), new TypeToken<List<InternshipParticipant>>() {
+                List<Employee> list = gson.fromJson(response.toString(), new TypeToken<List<Employee>>() {
                 }.getType());
 
                 updatable.update(list);
@@ -57,14 +50,10 @@ public class InternshipParticipantClient extends BaseClient {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(context, "Cannot load internship participant", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Cannot load internships", Toast.LENGTH_SHORT).show();
             }
         });
 
         queue.add(jsObjRequest);
-    }
-
-    private void add(String url, InternshipParticipant internshipParticipant) {
-
     }
 }

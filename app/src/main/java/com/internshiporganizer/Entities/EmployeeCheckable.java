@@ -3,11 +3,26 @@ package com.internshiporganizer.Entities;
 public class EmployeeCheckable extends Employee {
     private boolean checked;
 
-    public boolean getChecked(){
+    public EmployeeCheckable() {
+
+    }
+
+    public EmployeeCheckable(Employee employee) {
+        this.setId(employee.getId());
+        this.setFirstName(employee.getFirstName());
+        this.setLastName(employee.getLastName());
+        this.setEmail(employee.getEmail());
+        this.setOffice(employee.getOffice());
+        this.setCity(employee.getCity());
+        this.setAdministrator(employee.getAdministrator());
+        this.checked = false;
+    }
+
+    public boolean getChecked() {
         return checked;
     }
 
-    public void setChecked(boolean checked){
+    public void setChecked(boolean checked) {
         this.checked = checked;
     }
 }

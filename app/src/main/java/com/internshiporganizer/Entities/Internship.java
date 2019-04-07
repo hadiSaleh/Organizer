@@ -11,7 +11,7 @@ public class Internship {
 
     private String startDate;
 
-    private String finishDate;
+    private String endDate;
 
     private String city;
 
@@ -49,12 +49,12 @@ public class Internship {
         this.startDate = startDate;
     }
 
-    public String getFinishDate() {
-        return finishDate;
+    public String getEndDate() {
+        return endDate;
     }
 
-    public void setFinishDate(String finishDate) {
-        this.finishDate = finishDate;
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
     }
 
     public String getCity() {

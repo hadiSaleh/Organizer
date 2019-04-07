@@ -1,6 +1,5 @@
 package com.internshiporganizer;
 
-import android.accessibilityservice.GestureDescription;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -59,7 +58,7 @@ public class LoginActivity extends AppCompatActivity implements Updatable<Employ
         sharedPreferences.edit()
                 .putString(Constants.EMAIL, email)
                 .putString(Constants.PASSWORD_HASH, passwordHash)
-                .putBoolean(Constants.IS_ADMINISTRATOR,employee.getAdministrator())
+                .putBoolean(Constants.IS_ADMINISTRATOR, employee.getAdministrator())
                 .putLong(Constants.ID, employee.getId()).apply();
 
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
@@ -86,7 +85,7 @@ public class LoginActivity extends AppCompatActivity implements Updatable<Employ
     }
 
     private void tryLogin() {
-        email = "test@test.test";
+        email = "test0@test.test";
         passwordHash = "A665A45920422F9D417E4867EFDC4FB8A04A1F3FFF1FA07E998E86F7F7A27AE3";
 
         AuthCredentials authCredentials = new AuthCredentials();

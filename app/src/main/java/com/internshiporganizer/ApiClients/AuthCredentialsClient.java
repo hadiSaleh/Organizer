@@ -3,7 +3,6 @@ package com.internshiporganizer.ApiClients;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -53,7 +52,10 @@ public class AuthCredentialsClient extends BaseClient {
             public void onResponse(JSONObject response) {
                 Employee employee = gson.fromJson(response.toString(), new TypeToken<Employee>() {
                 }.getType());
-                updatable.update(employee);
+
+                if (updatable != null) {
+                    updatable.update(employee);
+                }
             }
 
         }, new Response.ErrorListener() {
