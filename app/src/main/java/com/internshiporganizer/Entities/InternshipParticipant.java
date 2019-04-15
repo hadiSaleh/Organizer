@@ -2,11 +2,8 @@ package com.internshiporganizer.Entities;
 
 public class InternshipParticipant {
     private long id;
-
     private Internship internship;
-
     private Employee employee;
-
     private boolean admin;
 
     public long getId() {

@@ -38,10 +38,10 @@ public class InternshipActivity extends AppCompatActivity {
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
-        InternshipInfoFragment internshipInfoFragment = new InternshipInfoFragment();
+        InternshipInfoFragment internshipInfoFragment = InternshipInfoFragment.newInstance(internshipId);
         adapter.addFragment(internshipInfoFragment, "Info");
 
-        GoalsFragment goalsFragment = new GoalsFragment();
+        GoalsFragment goalsFragment = GoalsFragment.newInstance(internshipId);
         adapter.addFragment(goalsFragment, "Goals");
         goalsFragment.setInternshipTitle(internshipTitle);
 

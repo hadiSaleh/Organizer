@@ -4,6 +4,7 @@
     package="com.internshiporganizer">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -27,7 +28,9 @@
         <activity android:name=".activities.InternshipActivity" />
         <activity android:name=".activities.GoalActivity" />
         <activity android:name=".activities.InternshipCreationActivity" />
-        <activity android:name=".activities.InternshipAddEmployeesActivity"></activity>
+        <activity android:name=".activities.InternshipAddEmployeesActivity" />
+        <activity android:name=".activities.GoalCreationActivity" />
+        <activity android:name=".activities.FullScreenImageActivity"></activity>
     </application>
 
 </manifest>

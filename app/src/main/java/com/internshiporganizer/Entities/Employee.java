@@ -2,17 +2,11 @@ package com.internshiporganizer.Entities;
 
 public class Employee {
     private long id;
-
     private String email;
-
     private String firstName;
-
     private String lastName;
-
     private String city;
-
     private Office office;
-
     private boolean administrator;
 
     public long getId() {

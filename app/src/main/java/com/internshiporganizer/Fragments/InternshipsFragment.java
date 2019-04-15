@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ListFragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,21 +16,24 @@ import android.widget.ListView;
 import com.internshiporganizer.Constants;
 import com.internshiporganizer.Updatable;
 import com.internshiporganizer.activities.InternshipActivity;
-import com.internshiporganizer.Adapters.InternshipsAdapter;
+import com.internshiporganizer.Adapters.InternshipAdapter;
 import com.internshiporganizer.ApiClients.InternshipClient;
 import com.internshiporganizer.Entities.Internship;
 import com.internshiporganizer.R;
 import com.internshiporganizer.activities.InternshipCreationActivity;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class InternshipsFragment extends ListFragment implements Updatable<List<Internship>> {
-    private InternshipsAdapter adapter;
+    private InternshipAdapter adapter;
     private ArrayList<Internship> internships;
     private InternshipClient internshipClient;
     private SharedPreferences sharedPreferences;
     private FloatingActionButton fab;
+    private SwipeRefreshLayout refreshInternships;
 
     public InternshipsFragment() {
         // Required empty public constructor
@@ -39,6 +43,15 @@ public class InternshipsFragment extends ListFragment implements Updatable<List<
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         sharedPreferences = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+
+        refreshInternships = getView().findViewById(R.id.refreshInternships);
+        refreshInternships.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadInternships();
+            }
+        });
+
         internshipClient = new InternshipClient(getContext(), this);
         loadInternships();
 
@@ -65,19 +78,27 @@ public class InternshipsFragment extends ListFragment implements Updatable<List<
     @Override
     public void update(List<Internship> items) {
         internships.addAll(items);
+        Collections.sort(internships, new Comparator<Internship>() {
+            @Override
+            public int compare(Internship i1, Internship i2) {
+                return Boolean.compare(i2.getActive(), i1.getActive());
+            }
+        });
+
         adapter.notifyDataSetChanged();
+        refreshInternships.setRefreshing(false);
     }
 
     private void setFAB() {
         fab = getView().findViewById(R.id.fabInternships);
-        boolean administrator = sharedPreferences.getBoolean(Constants.IS_ADMINISTRATOR,false);
-        if(!administrator){
+        boolean administrator = sharedPreferences.getBoolean(Constants.IS_ADMINISTRATOR, false);
+        if (!administrator) {
             hideFAB();
         }
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO go to create
                 Intent intent = new Intent(getActivity(), InternshipCreationActivity.class);
                 startActivity(intent);
             }
@@ -86,18 +107,11 @@ public class InternshipsFragment extends ListFragment implements Updatable<List<
 
     private void loadInternships() {
         internships = new ArrayList<>();
-        adapter = new InternshipsAdapter(getActivity(), internships);
+        adapter = new InternshipAdapter(getActivity(), internships);
         setListAdapter(adapter);
 
-        Internship internship = new Internship();
-        internship.setActive(true);
-        internship.setDescription("Some description");
-        internship.setTitle("Internship title");
-        internship.setId(123);
-
-        internships.add(internship);
-        adapter.notifyDataSetChanged();
-        //internshipClient.getAllByEmployee(123);
+        long employeeId = sharedPreferences.getLong(Constants.ID, 0);
+        internshipClient.getAllByEmployee(employeeId);
     }
 
     @SuppressLint("RestrictedApi")

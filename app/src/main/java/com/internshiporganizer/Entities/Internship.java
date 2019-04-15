@@ -1,21 +1,19 @@
 package com.internshiporganizer.Entities;
 
-import java.util.Date;
 
 public class Internship {
     private long id;
-
     private String title;
-
     private String description;
-
     private String startDate;
-
     private String endDate;
-
     private String city;
-
+    private String address;
+    private String organization;
+    private String email;
+    private String phoneNumber;
     private boolean active;
+    private int imageCount;
 
     public long getId() {
         return id;
@@ -65,11 +63,51 @@ public class Internship {
         this.city = city;
     }
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getOrganization() {
+        return organization;
+    }
+
+    public void setOrganization(String organization) {
+        this.organization = organization;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
     public boolean getActive() {
         return active;
     }
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public int getImageCount() {
+        return imageCount;
+    }
+
+    public void setImageCount(int imageCount) {
+        this.imageCount = imageCount;
     }
 }

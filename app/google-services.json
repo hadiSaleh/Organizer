@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "459092488775-9ki50rpgkmmtnh31i88f5jsahgrl5rui.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.internshiporganizer",
+            "certificate_hash": "91c7f656d58a1ebef1a5fc4b088ab476fa1e4eea"
+          }
+        },
+        {
           "client_id": "459092488775-qi18pr3nq9tk3a46op8uqgtg3aq9ckrb.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -25,15 +33,13 @@
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 2
+          "other_platform_oauth_client": [
+            {
+              "client_id": "459092488775-qi18pr3nq9tk3a46op8uqgtg3aq9ckrb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

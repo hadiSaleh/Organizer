@@ -1,10 +1,14 @@
 package com.internshiporganizer.Fragments;
 
 
+import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ListFragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,46 +16,64 @@ import android.widget.ListView;
 
 import com.internshiporganizer.Adapters.GoalAdapter;
 import com.internshiporganizer.ApiClients.GoalClient;
+import com.internshiporganizer.Constants;
 import com.internshiporganizer.Entities.Goal;
 import com.internshiporganizer.R;
 import com.internshiporganizer.Updatable;
 import com.internshiporganizer.activities.GoalActivity;
+import com.internshiporganizer.activities.GoalCreationActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class GoalsFragment extends ListFragment implements Updatable<List<Goal>> {
+    private long internshipId;
     private GoalAdapter adapter;
     private ArrayList<Goal> goals;
     private GoalClient goalClient;
     private String internshipTitle;
+    private FloatingActionButton fab;
+    private SwipeRefreshLayout refreshGoals;
+
+    private SharedPreferences sharedPreferences;
 
     public GoalsFragment() {
         // Required empty public constructor
     }
 
+    public static GoalsFragment newInstance(long internshipId) {
+        GoalsFragment f = new GoalsFragment();
+        Bundle bdl = new Bundle(2);
+        bdl.putLong(Constants.ID, internshipId);
+        f.setArguments(bdl);
+        return f;
+    }
+
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        internshipId = getArguments().getLong(Constants.ID);
+
+        sharedPreferences = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+
+        refreshGoals = getView().findViewById(R.id.refreshGoals);
+        refreshGoals.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                loadGoals();
+            }
+        });
+
         goalClient = new GoalClient(getContext(), this);
         loadGoals();
 
-        FloatingActionButton fab = getView().findViewById(R.id.fabGoals);
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //TODO go to create
-//                Intent intent = new Intent(getActivity(), NoteCreatingActivity.class);
-//                startActivity(intent);
-            }
-        });
+        setFAB();
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
         final Goal goal = (Goal) adapter.getItem(position);
-        Intent intent = new Intent(getActivity(),GoalActivity.class);
+        Intent intent = new Intent(getActivity(), GoalActivity.class);
         intent.putExtra("goalId", goal.getId());
         intent.putExtra("internshipTitle", internshipTitle);
         startActivity(intent);
@@ -68,10 +90,28 @@ public class GoalsFragment extends ListFragment implements Updatable<List<Goal>>
     public void update(List<Goal> items) {
         goals.addAll(items);
         adapter.notifyDataSetChanged();
+        refreshGoals.setRefreshing(false);
     }
 
     public void setInternshipTitle(String internshipTitle) {
         this.internshipTitle = internshipTitle;
+    }
+
+    private void setFAB() {
+        fab = getView().findViewById(R.id.fabGoals);
+        boolean administrator = sharedPreferences.getBoolean(Constants.IS_ADMINISTRATOR, false);
+        if (!administrator) {
+            hideFAB();
+        }
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), GoalCreationActivity.class);
+                intent.putExtra("internshipId", internshipId);
+                startActivity(intent);
+            }
+        });
     }
 
     private void loadGoals() {
@@ -79,18 +119,23 @@ public class GoalsFragment extends ListFragment implements Updatable<List<Goal>>
         adapter = new GoalAdapter(getActivity(), goals);
         setListAdapter(adapter);
 
-        Goal goal = new Goal();
-        goal.setTitle("Goal 1");
-        goal.setDescription("Goal 1 is very important");
-        goals.add(goal);
+//        Goal goal = new Goal();
+//        goal.setTitle("Goal 1");
+//        goal.setDescription("Goal 1 is very important");
+//        goals.add(goal);
+//
+//        Goal goal12 = new Goal();
+//        goal12.setTitle("Goal 2");
+//        goal12.setCompleted(true);
+//        goals.add(goal12);
+//        adapter.notifyDataSetChanged();
 
-        Goal goal12 = new Goal();
-        goal12.setTitle("Goal 2");
-        goal12.setCompleted(true);
-        goals.add(goal12);
+        long employeeId = sharedPreferences.getLong(Constants.ID, 0);
+        goalClient.getAllByEmployeeAndInternship(internshipId, employeeId);
+    }
 
-        adapter.notifyDataSetChanged();
-
-        //goalClient.getAllByEmployeeAndInternship(123,321);
+    @SuppressLint("RestrictedApi")
+    private void hideFAB() {
+        fab.setVisibility(View.GONE);
     }
 }

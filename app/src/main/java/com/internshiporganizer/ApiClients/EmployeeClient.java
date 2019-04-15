@@ -35,6 +35,11 @@ public class EmployeeClient extends BaseClient {
         get(url);
     }
 
+    public void getByInternship(long internshipId) {
+        String url = baseUrl + internshipsUrl + "/byInternship/" + internshipId;
+        get(url);
+    }
+
     private void get(String url) {
         JsonArrayRequest jsObjRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
@@ -50,7 +55,7 @@ public class EmployeeClient extends BaseClient {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(context, "Cannot load internships", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Cannot load employees", Toast.LENGTH_SHORT).show();
             }
         });
 

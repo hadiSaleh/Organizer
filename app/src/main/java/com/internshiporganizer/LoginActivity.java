@@ -31,6 +31,7 @@ public class LoginActivity extends AppCompatActivity implements Updatable<Employ
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        setResult(RESULT_OK, null);
         getSupportActionBar().hide();
 
         authCredentialsClient = new AuthCredentialsClient(getApplicationContext(), this);
@@ -62,7 +63,7 @@ public class LoginActivity extends AppCompatActivity implements Updatable<Employ
                 .putLong(Constants.ID, employee.getId()).apply();
 
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        startActivity(intent);
+        startActivityForResult(intent, Constants.REQUEST_EXIT);
     }
 
     private void checkPreferences() {
@@ -93,5 +94,14 @@ public class LoginActivity extends AppCompatActivity implements Updatable<Employ
         authCredentials.setPasswordHash(passwordHash.toUpperCase());
 
         authCredentialsClient.tryLogin(authCredentials);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == Constants.REQUEST_EXIT) {
+            if (resultCode == RESULT_OK) {
+                this.finish();
+            }
+        }
     }
 }

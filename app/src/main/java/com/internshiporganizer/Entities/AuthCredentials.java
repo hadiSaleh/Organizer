@@ -2,7 +2,6 @@ package com.internshiporganizer.Entities;
 
 public class AuthCredentials {
     private String email;
-
     private String passwordHash;
 
     public String getEmail() {

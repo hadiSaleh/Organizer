@@ -4,13 +4,9 @@ import java.util.Date;
 
 public class ChatMessage {
     private long id;
-
     private Internship internship;
-
     private Employee employee;
-
     private String message;
-
     private Date time;
 
     public long getId() {

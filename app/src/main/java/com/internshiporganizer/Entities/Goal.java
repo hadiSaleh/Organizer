@@ -1,23 +1,28 @@
 package com.internshiporganizer.Entities;
 
-import java.util.Date;
 
 public class Goal {
     private long id;
-
     private Internship internship;
-
     private Employee employee;
-
     private String title;
-
     private String description;
-
     private String place;
-
     private boolean completed;
+    private String deadline;
 
-    private Date deadline;
+    public Goal() {
+    }
+
+    public Goal(Goal goal) {
+        title = goal.getTitle();
+        description = goal.getDescription();
+        place = goal.getPlace();
+        completed = goal.getCompleted();
+        deadline = goal.getDeadline();
+        internship = goal.getInternship();
+        employee = goal.getEmployee();
+    }
 
     public long getId() {
         return id;
@@ -75,11 +80,11 @@ public class Goal {
         this.completed = completed;
     }
 
-    public Date getDeadline() {
+    public String getDeadline() {
         return deadline;
     }
 
-    public void setDeadline(Date deadline) {
+    public void setDeadline(String deadline) {
         this.deadline = deadline;
     }
 }

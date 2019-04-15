@@ -35,8 +35,13 @@ public class InternshipClient extends BaseClient {
         queue = Volley.newRequestQueue(context);
     }
 
+    public void getById(long internshipId) {
+        String url = baseUrl + internshipsUrl + "/" + internshipId;
+        getOne(url);
+    }
+
     public void getAllByEmployee(long employeeId) {
-        String url = baseUrl + internshipsUrl;
+        String url = baseUrl + internshipsUrl + "/byEmployee/" + employeeId;
         get(url);
     }
 
@@ -51,7 +56,7 @@ public class InternshipClient extends BaseClient {
     }
 
     private void get(String url) {
-        JsonArrayRequest jsObjRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+        JsonArrayRequest jsArrayRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 Gson gson = new Gson();
@@ -66,6 +71,31 @@ public class InternshipClient extends BaseClient {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(context, "Cannot load internships", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        queue.add(jsArrayRequest);
+    }
+
+    private void getOne(String url) {
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Gson gson = new Gson();
+                Internship internship = gson.fromJson(response.toString(), new TypeToken<Internship>() {
+                }.getType());
+
+                ArrayList<Internship> arrayList = new ArrayList<>();
+                arrayList.add(internship);
+
+                updatable.update(arrayList);
+            }
+
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(context, "Cannot load internship", Toast.LENGTH_SHORT).show();
             }
         });
 
