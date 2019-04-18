@@ -48,4 +48,7 @@
     <string name="email">Email</string>
     <string name="phone">Phone</string>
     <string name="photos">Photos</string>
+    <string name="attachments">Attachments</string>
+    <string name="add_attachment">Add attachment</string>
+    <string name="attachment">Attachment</string>
 </resources>

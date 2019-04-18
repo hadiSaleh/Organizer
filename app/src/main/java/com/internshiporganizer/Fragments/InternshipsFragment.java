@@ -1,17 +1,22 @@
 package com.internshiporganizer.Fragments;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ListFragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.internshiporganizer.Constants;
 import com.internshiporganizer.Updatable;
@@ -26,6 +31,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+
+import static com.internshiporganizer.Constants.REQUEST_WRITE_EXTERNAL_STORAGE;
 
 public class InternshipsFragment extends ListFragment implements Updatable<List<Internship>> {
     private InternshipAdapter adapter;
@@ -43,6 +50,12 @@ public class InternshipsFragment extends ListFragment implements Updatable<List<
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         sharedPreferences = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+
+        int permissionCheck = ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_WRITE_EXTERNAL_STORAGE);
+        }
 
         refreshInternships = getView().findViewById(R.id.refreshInternships);
         refreshInternships.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -117,5 +130,19 @@ public class InternshipsFragment extends ListFragment implements Updatable<List<
     @SuppressLint("RestrictedApi")
     private void hideFAB() {
         fab.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_WRITE_EXTERNAL_STORAGE:
+                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    Toast.makeText(getContext(), "Permission granted", Toast.LENGTH_SHORT).show();
+                }
+                break;
+
+            default:
+                break;
+        }
     }
 }

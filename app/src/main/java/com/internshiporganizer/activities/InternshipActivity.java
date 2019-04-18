@@ -45,7 +45,7 @@ public class InternshipActivity extends AppCompatActivity {
         adapter.addFragment(goalsFragment, "Goals");
         goalsFragment.setInternshipTitle(internshipTitle);
 
-        ChatFragment chatFragment = new ChatFragment();
+        ChatFragment chatFragment = ChatFragment.newInstance(internshipId);
         adapter.addFragment(chatFragment, "Chat");
 
         viewPager.setAdapter(adapter);

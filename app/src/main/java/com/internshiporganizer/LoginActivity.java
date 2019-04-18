@@ -1,8 +1,12 @@
 package com.internshiporganizer;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -16,6 +20,8 @@ import com.internshiporganizer.Entities.Employee;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
+
+import static com.internshiporganizer.Constants.REQUEST_WRITE_EXTERNAL_STORAGE;
 
 public class LoginActivity extends AppCompatActivity implements Updatable<Employee> {
     private EditText activityLogin_editTextMail;
@@ -59,6 +65,7 @@ public class LoginActivity extends AppCompatActivity implements Updatable<Employ
         sharedPreferences.edit()
                 .putString(Constants.EMAIL, email)
                 .putString(Constants.PASSWORD_HASH, passwordHash)
+                .putString(Constants.NAME, employee.getFirstName() + " " + employee.getLastName())
                 .putBoolean(Constants.IS_ADMINISTRATOR, employee.getAdministrator())
                 .putLong(Constants.ID, employee.getId()).apply();
 
@@ -86,8 +93,6 @@ public class LoginActivity extends AppCompatActivity implements Updatable<Employ
     }
 
     private void tryLogin() {
-        email = "test0@test.test";
-        passwordHash = "A665A45920422F9D417E4867EFDC4FB8A04A1F3FFF1FA07E998E86F7F7A27AE3";
 
         AuthCredentials authCredentials = new AuthCredentials();
         authCredentials.setEmail(email);

@@ -16,11 +16,11 @@ import java.util.ArrayList;
 public class ChatMessageAdapter extends BaseAdapter {
     private LayoutInflater lInflater;
     private ArrayList<ChatMessage> objects;
-    private long id;
+    private long myId;
 
-    public ChatMessageAdapter(Context context, ArrayList<ChatMessage> messages, long id) {
+    public ChatMessageAdapter(Context context, ArrayList<ChatMessage> messages, long myId) {
         objects = messages;
-        this.id = id;
+        this.myId = myId;
         lInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -47,12 +47,13 @@ public class ChatMessageAdapter extends BaseAdapter {
 
         final ChatMessage m = getChatMessage(position);
 
-        if (!(m.getEmployee().getId() == id)) {
+        if (!(m.getEmployeeId() == myId)) {
             view = lInflater.inflate(R.layout.list_item_message_received, parent, false);
 
             TextView msg = view.findViewById(R.id.message_text);
             msg.setText(m.getMessage());
             final TextView nick = view.findViewById(R.id.nick);
+            nick.setText(m.getName());
             msg.setTextColor(Color.BLACK);
             return view;
         }

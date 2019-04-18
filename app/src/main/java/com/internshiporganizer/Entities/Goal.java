@@ -10,6 +10,7 @@ public class Goal {
     private String place;
     private boolean completed;
     private String deadline;
+    private int attachmentCount;
 
     public Goal() {
     }
@@ -86,5 +87,13 @@ public class Goal {
 
     public void setDeadline(String deadline) {
         this.deadline = deadline;
+    }
+
+    public int getAttachmentCount() {
+        return attachmentCount;
+    }
+
+    public void setAttachmentCount(int attachmentCount) {
+        this.attachmentCount = attachmentCount;
     }
 }

@@ -2,56 +2,75 @@ package com.internshiporganizer.Fragments;
 
 
 import android.annotation.SuppressLint;
+import android.app.DownloadManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.OpenableColumns;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.view.ViewGroup.LayoutParams;
 
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FileDownloadTask;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.internshiporganizer.Adapters.InternshipAttachmentAdapter;
+import com.internshiporganizer.ApiClients.InternshipAttachmentClient;
 import com.internshiporganizer.ApiClients.InternshipClient;
-import com.internshiporganizer.ApiClients.InternshipImagesClient;
+import com.internshiporganizer.ApiClients.InternshipImageClient;
 import com.internshiporganizer.Constants;
 import com.internshiporganizer.Entities.Internship;
+import com.internshiporganizer.Entities.InternshipAttachment;
 import com.internshiporganizer.R;
 import com.internshiporganizer.Updatable;
 import com.internshiporganizer.activities.FullScreenImageActivity;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import static android.app.Activity.RESULT_OK;
+import static com.internshiporganizer.Constants.RESULT_LOAD_ATTACHMENT;
 import static com.internshiporganizer.Constants.RESULT_LOAD_IMAGE;
 
 public class InternshipInfoFragment extends Fragment {
+    private InternshipAttachmentAdapter adapter;
+    private ArrayList<InternshipAttachment> attachments;
+
     private long internshipId;
     private InternshipClient internshipClient;
+    private InternshipImageClient internshipImageClient;
+    private InternshipAttachmentClient internshipAttachmentClient;
     private StorageReference storageRef;
     private SharedPreferences sharedPreferences;
-    private InternshipImagesClient internshipImagesClient;
+    private DisplayMetrics displayMetrics;
 
     private TextView titleTV;
     private TextView descriptionTV;
@@ -64,9 +83,11 @@ public class InternshipInfoFragment extends Fragment {
     private TextView phoneTV;
     private ImageView addPhoto;
     private LinearLayout photosLL;
+    private TextView addAttachmentTV;
+    private ListView attachmentLV;
 
     private Bitmap selectedImage;
-    private Uri imageUri;
+    private int attachmentCount;
     private int imageCount;
     boolean isImageFitToScreen;
 
@@ -84,13 +105,23 @@ public class InternshipInfoFragment extends Fragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        displayMetrics = getActivity().getResources().getDisplayMetrics();
+
         internshipId = getArguments().getLong(Constants.ID);
         storageRef = FirebaseStorage.getInstance().getReference();
         sharedPreferences = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         setViews();
-        setAddPhotoVisibility();
+        setViewsVisibility();
 
-        internshipImagesClient = new InternshipImagesClient(getContext());
+        internshipImageClient = new InternshipImageClient(getContext());
+        internshipAttachmentClient = new InternshipAttachmentClient(getContext(), new Updatable<List<InternshipAttachment>>() {
+            @Override
+            public void update(List<InternshipAttachment> internshipAttachments) {
+                attachments.addAll(internshipAttachments);
+                adapter.notifyDataSetChanged();
+            }
+        });
+
         loadInternship();
     }
 
@@ -129,7 +160,11 @@ public class InternshipInfoFragment extends Fragment {
                     phoneTV.setText(internship.getPhoneNumber());
                 }
 
-                loadPhotos();
+                try {
+                    loadPhotos();
+                    loadAttachments();
+                } catch (Exception ignored) {
+                }
             }
         });
 
@@ -149,12 +184,38 @@ public class InternshipInfoFragment extends Fragment {
         phoneTV = getView().findViewById(R.id.currentInternship_textViewPhone);
         addPhoto = getView().findViewById(R.id.currentInternship_addPhoto);
         photosLL = getView().findViewById(R.id.currentInternship_photos);
+        addAttachmentTV = getView().findViewById(R.id.currentInternship_addAttachment);
+        attachmentLV = getView().findViewById(R.id.currentInternship_attachments);
+        attachmentLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                final InternshipAttachment attachment = (InternshipAttachment) adapter.getItem(position);
+                DownloadManager downloadmanager = (DownloadManager) getContext().getSystemService(Context.DOWNLOAD_SERVICE);
+                DownloadManager.Request request = new DownloadManager.Request(Uri.parse(attachment.getUrl()));
+                request.setTitle(attachment.getName());
+                request.setDescription("Downloading");
+                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                request.setVisibleInDownloadsUi(false);
+                request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, attachment.getName());
+
+                downloadmanager.enqueue(request);
+            }
+        });
 
         addPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent i = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(i, RESULT_LOAD_IMAGE);
+            }
+        });
+
+        addAttachmentTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(Intent.ACTION_GET_CONTENT);
+                i.setType("*/*");
+                startActivityForResult(i, RESULT_LOAD_ATTACHMENT);
             }
         });
 
@@ -184,42 +245,62 @@ public class InternshipInfoFragment extends Fragment {
         });
     }
 
-    private void setAddPhotoVisibility() {
+    private void setViewsVisibility() {
         boolean administrator = sharedPreferences.getBoolean(Constants.IS_ADMINISTRATOR, false);
         if (!administrator) {
             addPhoto.setVisibility(View.GONE);
+            addAttachmentTV.setVisibility(View.GONE);
         }
+    }
+
+    private void loadAttachments() {
+        attachments = new ArrayList<>();
+        adapter = new InternshipAttachmentAdapter(getContext(), attachments);
+        attachmentLV.setAdapter(adapter);
+
+        internshipAttachmentClient.getAllByInternship(internshipId);
     }
 
     private void loadPhotos() {
         for (int i = 0; i < imageCount; i++) {
-            StorageReference riversRef = storageRef.child("images/internships/" + internshipId + "/" + i + ".jpg");
-            File localFile = null;
-            try {
-                localFile = File.createTempFile("img" + String.valueOf(i), "jpg");
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            final File finalLocalFile = localFile;
-            riversRef.getFile(localFile)
-                    .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                            photosLL.addView(insertPhoto(finalLocalFile));
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception exception) {
-                    Toast.makeText(getContext(), "Cannot load photo", Toast.LENGTH_SHORT).show();
-                }
-            });
+            loadPhoto(i);
         }
     }
 
+    private void loadPhoto(int i) {
+        StorageReference riversRef = storageRef.child("images/internships/" + internshipId + "/" + i + ".jpg");
+        File localFile = null;
+        try {
+            localFile = File.createTempFile("img" + String.valueOf(i), "jpg");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        final File finalLocalFile = localFile;
+        riversRef.getFile(localFile)
+                .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                        if (getContext() == null) {
+                            return;
+                        }
+
+                        photosLL.addView(insertPhoto(finalLocalFile));
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception exception) {
+                if (getContext() == null) {
+                    return;
+                }
+
+                Toast.makeText(getContext(), "Cannot load photo", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private float toPixels(long dp) {
-        Resources r = getActivity().getResources();
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics());
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, displayMetrics);
     }
 
     private View insertPhoto(final File file) {
@@ -254,8 +335,6 @@ public class InternshipInfoFragment extends Fragment {
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(path, options);
 
-//        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
-
         options.inJustDecodeBounds = false;
         Bitmap bm = BitmapFactory.decodeFile(path, options);
 
@@ -288,12 +367,13 @@ public class InternshipInfoFragment extends Fragment {
     @Override
     public void onActivityResult(int reqCode, int resultCode, Intent data) {
         super.onActivityResult(reqCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
+        if (reqCode == RESULT_LOAD_IMAGE) {
+            if (resultCode != RESULT_OK) {
+                Toast.makeText(getActivity(), "You haven't picked Image", Toast.LENGTH_LONG).show();
+                return;
+            }
             try {
-                imageUri = data.getData();
-//                final InputStream imageStream = getActivity().getContentResolver().openInputStream(imageUri);
-//                selectedImage = BitmapFactory.decodeStream(imageStream);
-//                picture.setImageBitmap(selectedImage);
+                Uri imageUri = data.getData();
                 StorageReference riversRef = storageRef
                         .child("images/internships/" + internshipId + "/" + imageCount + ".jpg");
 
@@ -304,7 +384,8 @@ public class InternshipInfoFragment extends Fragment {
                                 Uri downloadUrl = taskSnapshot.getUploadSessionUri();
                                 Toast.makeText(getContext(), downloadUrl.toString(), Toast.LENGTH_SHORT).show();
                                 imageCount++;
-                                internshipImagesClient.updateImageCount(internshipId, imageCount);
+                                internshipImageClient.updateImageCount(internshipId, imageCount);
+                                loadPhoto(imageCount - 1);
                             }
                         })
                         .addOnFailureListener(new OnFailureListener() {
@@ -317,8 +398,64 @@ public class InternshipInfoFragment extends Fragment {
                 e.printStackTrace();
                 Toast.makeText(getActivity(), "Something went wrong", Toast.LENGTH_LONG).show();
             }
-        } else {
-            Toast.makeText(getActivity(), "You haven't picked Image", Toast.LENGTH_LONG).show();
+        }
+
+        if (reqCode == RESULT_LOAD_ATTACHMENT) {
+            if (resultCode != RESULT_OK) {
+                Toast.makeText(getActivity(), "You haven't picked file", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            Uri uri = data.getData();
+            String uriString = uri.toString();
+            File myFile = new File(uriString);
+            String path = myFile.getAbsolutePath();
+            String displayName = null;
+            if (uriString.startsWith("content://")) {
+                try (Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null)) {
+                    if (cursor != null && cursor.moveToFirst()) {
+                        displayName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                    }
+                }
+            } else if (uriString.startsWith("file://")) {
+                displayName = myFile.getName();
+            }
+
+            Internship internship = new Internship();
+            internship.setId(internshipId);
+            final InternshipAttachment internshipAttachment = new InternshipAttachment();
+            internshipAttachment.setInternship(internship);
+            internshipAttachment.setName(displayName);
+            final InternshipAttachmentClient client = new InternshipAttachmentClient(getContext(), new Updatable<List<InternshipAttachment>>() {
+                @Override
+                public void update(List<InternshipAttachment> internshipAttachments) {
+                    loadAttachments();
+                }
+            });
+
+            final StorageReference riversRef = storageRef.child("attachments/internships/" + internshipId + "/" + displayName);
+            riversRef.putFile(uri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if (!task.isSuccessful()) {
+                        throw task.getException();
+                    }
+                    return riversRef.getDownloadUrl();
+                }
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if (task.isSuccessful()) {
+                        Uri downloadUri = task.getResult();
+                        internshipAttachment.setUrl(downloadUri.toString());
+                        client.add(internshipAttachment);
+                    } else {
+                        Toast.makeText(getContext(), "Cannot add attachment", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+            Toast.makeText(getActivity(), displayName, Toast.LENGTH_LONG).show();
         }
     }
 }

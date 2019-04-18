@@ -7,12 +7,12 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-public class InternshipImagesClient extends BaseClient {
+public class InternshipImageClient extends BaseClient {
     private static final String internshipsUrl = "internships/";
     private RequestQueue queue;
     private Context context;
 
-    public InternshipImagesClient(Context context) {
+    public InternshipImageClient(Context context) {
         this.context = context;
         queue = Volley.newRequestQueue(context);
     }

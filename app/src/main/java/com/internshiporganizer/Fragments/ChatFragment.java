@@ -1,75 +1,179 @@
 package com.internshiporganizer.Fragments;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.collection.ArraySortedMap;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.internshiporganizer.Adapters.ChatMessageAdapter;
+import com.internshiporganizer.Constants;
 import com.internshiporganizer.Entities.ChatMessage;
-import com.internshiporganizer.Entities.Employee;
 import com.internshiporganizer.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ChatFragment extends ListFragment {
     private ArrayList<ChatMessage> messages;
-    private long id;
+    private long internshipId;
+    private long myId;
+    private String myName;
+    private SharedPreferences sharedPreferences;
+    private FirebaseDatabase fDB;
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     private ChatMessageAdapter adapter;
     private EditText editText;
     private ImageButton sendButton;
 
+
     public ChatFragment() {
         // Required empty public constructor
+    }
+
+    public static ChatFragment newInstance(long internshipId) {
+        ChatFragment f = new ChatFragment();
+        Bundle bdl = new Bundle(2);
+        bdl.putLong(Constants.ID, internshipId);
+        f.setArguments(bdl);
+        return f;
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        internshipId = getArguments().getLong(Constants.ID);
+        fDB = FirebaseDatabase.getInstance();
+
+        sharedPreferences = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
+        checkPreferences();
 
         editText = getView().findViewById(R.id.edittext_chatbox);
         sendButton = getView().findViewById(R.id.button_chatbox_send);
 
-        sendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-            }
-        });
+        sendMessageButton();
 
         loadMessages();
     }
 
+    private void sendMessageButton() {
+
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final String messageToSend = editText.getText().toString();
+                if (messageToSend.isEmpty()) {
+                    return;
+                }
+
+                final ChatMessage message = new ChatMessage();
+                message.setMessage(messageToSend);
+                message.setEmployeeId(myId);
+                message.setName(myName);
+
+                final DatabaseReference dbRef = fDB.getReference("chat/" + internshipId + "/numberOfMessages");
+                dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        int n = 0;
+                        if (dataSnapshot.getValue() != null) {
+                            n = Integer.parseInt(dataSnapshot.getValue().toString());
+                        }
+
+                        n++;
+                        fDB.getReference("chat/" + internshipId + "/messages/" + n)
+                                .setValue(message);
+                        dbRef.setValue(n);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
+
+                editText.setText("");
+            }
+        });
+    }
+
+    private void checkPreferences() {
+        myName = sharedPreferences.getString(Constants.NAME, "");
+        myId = sharedPreferences.getLong(Constants.ID, 0);
+    }
+
     private void loadMessages() {
+        final Gson gson = new Gson();
+
+        fDB.getReference("chat/" + internshipId + "/messages").orderByKey().limitToLast(16).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (getActivity() == null) {
+                    return;
+                }
+
+                messages = new ArrayList<>();
+                adapter = new ChatMessageAdapter(getContext(), messages, myId);
+                setListAdapter(adapter);
+
+                ArrayList msgs = (ArrayList) dataSnapshot.getValue();
+
+                if (msgs == null) {
+                    return;
+                }
+
+                long k = 0;
+
+                for (Object msg : msgs) {
+                    if (msg == null) {
+                        continue;
+                    }
+
+                    Map<String, Object> m = (Map<String, Object>) msg;
+                    ChatMessage chatMessage = new ChatMessage();
+                    chatMessage.setName((String) m.get("name"));
+                    chatMessage.setEmployeeId((long) m.get("employeeId"));
+                    chatMessage.setMessage((String) m.get("message"));
+
+                    messages.add(chatMessage);
+                }
+
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
         messages = new ArrayList<>();
-        adapter = new ChatMessageAdapter(getContext(), messages, 1);
+        adapter = new ChatMessageAdapter(getContext(), messages, myId);
         setListAdapter(adapter);
 
-        ChatMessage m1 = new ChatMessage();
-        Employee e1 = new Employee();
-        e1.setId(1);
-        m1.setEmployee(e1);
-        m1.setMessage("Hi");
-
-        ChatMessage m2 = new ChatMessage();
-        Employee e2 = new Employee();
-        e2.setId(2);
-        m2.setEmployee(e2);
-        m2.setMessage("Hello");
-
-        ChatMessage m3 = new ChatMessage();
-        m3.setEmployee(e2);
-        m3.setMessage("Whassup");
-
-        messages.add(m1);
-        messages.add(m2);
-        messages.add(m3);
 
         adapter.notifyDataSetChanged();
     }

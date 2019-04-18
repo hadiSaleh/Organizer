@@ -1,36 +1,25 @@
 package com.internshiporganizer.Entities;
 
-import java.util.Date;
 
 public class ChatMessage {
-    private long id;
-    private Internship internship;
-    private Employee employee;
+    private long employeeId;
+    private String name;
     private String message;
-    private Date time;
 
-    public long getId() {
-        return id;
+    public long getEmployeeId() {
+        return employeeId;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setEmployeeId(long employeeId) {
+        this.employeeId = employeeId;
     }
 
-    public Internship getInternship() {
-        return internship;
+    public String getName() {
+        return name;
     }
 
-    public void setInternship(Internship internship) {
-        this.internship = internship;
-    }
-
-    public Employee getEmployee() {
-        return employee;
-    }
-
-    public void setEmployee(Employee employee) {
-        this.employee = employee;
+    public void setName(String name) {
+        this.name= name;
     }
 
     public String getMessage() {
@@ -39,13 +28,5 @@ public class ChatMessage {
 
     public void setMessage(String message) {
         this.message = message;
-    }
-
-    public Date getTime() {
-        return time;
-    }
-
-    public void setTime(Date time) {
-        this.time = time;
     }
 }
