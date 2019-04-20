@@ -12,7 +12,6 @@ public class EmployeeCheckable extends Employee {
         this.setFirstName(employee.getFirstName());
         this.setLastName(employee.getLastName());
         this.setEmail(employee.getEmail());
-        this.setOffice(employee.getOffice());
         this.setCity(employee.getCity());
         this.setAdministrator(employee.getAdministrator());
         this.checked = false;

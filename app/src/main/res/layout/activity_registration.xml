@@ -72,7 +72,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textInputLayout2">
 
         <EditText
-            android:id="@+id/registration_Email"
+            android:id="@+id/registration_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/email"
@@ -160,4 +160,14 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
+
+    <CheckBox
+        android:id="@+id/registration_requestAdmin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/request_administrator_rights"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout6" />
 </android.support.constraint.ConstraintLayout>

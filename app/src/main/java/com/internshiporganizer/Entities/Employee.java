@@ -6,7 +6,6 @@ public class Employee {
     private String firstName;
     private String lastName;
     private String city;
-    private Office office;
     private boolean administrator;
     private String fireBaseToken;
 
@@ -40,14 +39,6 @@ public class Employee {
 
     public void setCity(String city) {
         this.city = city;
-    }
-
-    public Office getOffice() {
-        return office;
-    }
-
-    public void setOffice(Office office) {
-        this.office = office;
     }
 
     public String getEmail() {

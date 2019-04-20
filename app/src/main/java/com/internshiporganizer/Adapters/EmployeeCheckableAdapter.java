@@ -58,7 +58,7 @@ public class EmployeeCheckableAdapter extends BaseAdapter {
         final Employee p = getEmployee(position);
         String name = p.getFirstName() + " " + p.getLastName();
         ((TextView) view.findViewById(R.id.textEmployeeName)).setText(name);
-        ((TextView) view.findViewById(R.id.textEmployeeOffice)).setText(p.getOffice().getName());
+        ((TextView) view.findViewById(R.id.textEmployeeOffice)).setText(p.getCity());
 
         return view;
     }

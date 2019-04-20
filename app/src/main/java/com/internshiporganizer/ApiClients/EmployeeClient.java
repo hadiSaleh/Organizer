@@ -14,6 +14,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.internshiporganizer.Entities.Employee;
+import com.internshiporganizer.Entities.NewEmployee;
 import com.internshiporganizer.Updatable;
 
 import org.json.JSONArray;
@@ -24,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EmployeeClient extends BaseClient {
-    private static final String internshipsUrl = "employees";
+    private static final String employeesUrl = "employees";
     private RequestQueue queue;
     private Context context;
     private Updatable<List<Employee>> updatable;
@@ -36,28 +37,33 @@ public class EmployeeClient extends BaseClient {
     }
 
     public void get() {
-        String url = baseUrl + internshipsUrl;
+        String url = baseUrl + employeesUrl;
         get(url);
     }
 
     public void getOne(long employeeId) {
-        String url = baseUrl + internshipsUrl + "/" + employeeId;
+        String url = baseUrl + employeesUrl + "/" + employeeId;
         getOne(url);
     }
 
     public void getByInternship(long internshipId) {
-        String url = baseUrl + internshipsUrl + "/byInternship/" + internshipId;
+        String url = baseUrl + employeesUrl + "/byInternship/" + internshipId;
         get(url);
     }
 
     public void update(Employee employee) {
-        String url = baseUrl + internshipsUrl + "/update";
+        String url = baseUrl + employeesUrl + "/update";
         post(url, employee);
     }
 
-    public void updateToken(Employee employee){
-        String url = baseUrl + internshipsUrl + "/updateToken";
+    public void updateToken(Employee employee) {
+        String url = baseUrl + employeesUrl + "/updateToken";
         post(url, employee);
+    }
+
+    public void createEmployee(NewEmployee newEmployee) {
+        String url = baseUrl+ employeesUrl;
+        post(url, newEmployee);
     }
 
     private void post(String url, Employee newEmployee) {
@@ -87,7 +93,7 @@ public class EmployeeClient extends BaseClient {
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.e("Error: ", error.getMessage());
-                Toast.makeText(context, "Cannot update employee", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Cannot create or update employee", Toast.LENGTH_SHORT).show();
             }
         });
 
