@@ -94,7 +94,7 @@ public class GoalCreationActivity extends AppCompatActivity {
 
                 String[] lines = description.split("\r\n|\r|\n");
                 if (lines.length > 10) {
-                    Toast.makeText(GoalCreationActivity.this, "Description should not exceed 2 lines!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(GoalCreationActivity.this, "Description should not exceed 10 lines!", Toast.LENGTH_LONG).show();
                     return;
                 }
 

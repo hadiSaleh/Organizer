@@ -7,7 +7,9 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -15,7 +17,10 @@ import com.internshiporganizer.Entities.Employee;
 import com.internshiporganizer.Updatable;
 
 import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class EmployeeClient extends BaseClient {
@@ -35,9 +40,58 @@ public class EmployeeClient extends BaseClient {
         get(url);
     }
 
+    public void getOne(long employeeId) {
+        String url = baseUrl + internshipsUrl + "/" + employeeId;
+        getOne(url);
+    }
+
     public void getByInternship(long internshipId) {
         String url = baseUrl + internshipsUrl + "/byInternship/" + internshipId;
         get(url);
+    }
+
+    public void update(Employee employee) {
+        String url = baseUrl + internshipsUrl + "/update";
+        post(url, employee);
+    }
+
+    public void updateToken(Employee employee){
+        String url = baseUrl + internshipsUrl + "/updateToken";
+        post(url, employee);
+    }
+
+    private void post(String url, Employee newEmployee) {
+        final Gson gson = new Gson();
+        JSONObject jsonObject;
+        try {
+            jsonObject = new JSONObject(gson.toJson(newEmployee));
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Employee employee = gson.fromJson(response.toString(), new TypeToken<Employee>() {
+                }.getType());
+                ArrayList<Employee> arrayList = new ArrayList<>();
+                arrayList.add(employee);
+
+                if (updatable != null) {
+                    updatable.update(arrayList);
+                }
+            }
+
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyLog.e("Error: ", error.getMessage());
+                Toast.makeText(context, "Cannot update employee", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        queue.add(jsObjRequest);
     }
 
     private void get(String url) {
@@ -56,6 +110,33 @@ public class EmployeeClient extends BaseClient {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(context, "Cannot load employees", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        queue.add(jsObjRequest);
+    }
+
+    private void getOne(String url) {
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Gson gson = new Gson();
+                Employee employee = gson.fromJson(response.toString(), new TypeToken<Employee>() {
+                }.getType());
+
+                ArrayList<Employee> arrayList = new ArrayList<>();
+                arrayList.add(employee);
+
+                if (updatable != null) {
+                    updatable.update(arrayList);
+                }
+            }
+
+        }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(context, "Cannot load employee", Toast.LENGTH_SHORT).show();
             }
         });
 

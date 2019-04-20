@@ -51,4 +51,13 @@
     <string name="attachments">Attachments</string>
     <string name="add_attachment">Add attachment</string>
     <string name="attachment">Attachment</string>
+    <string name="note">Note</string>
+    <string name="complete">Complete</string>
+    <string name="my_profile">My profile</string>
+    <string name="internships">Internships</string>
+    <string name="profile">Profile</string>
+    <string name="first_name">First name</string>
+    <string name="second_name">Second name</string>
+    <string name="change">Change</string>
+    <string name="confirm_password">Confirm password</string>
 </resources>

@@ -8,18 +8,18 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
-import com.internshiporganizer.Entities.Goal;
+import com.internshiporganizer.Entities.Request;
 import com.internshiporganizer.R;
 
 import java.util.ArrayList;
 
-public class GoalAdapter extends BaseAdapter {
+public class RequestAdapter extends BaseAdapter {
     private LayoutInflater lInflater;
-    private ArrayList<Goal> objects;
+    private ArrayList<Request> objects;
     private boolean isAdmin;
 
-    public GoalAdapter(Context context, ArrayList<Goal> goals, boolean isAdmin) {
-        objects = goals;
+    public RequestAdapter(Context context, ArrayList<Request> requests, boolean isAdmin) {
+        objects = requests;
         this.isAdmin = isAdmin;
         lInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -47,16 +47,16 @@ public class GoalAdapter extends BaseAdapter {
             view = lInflater.inflate(R.layout.list_item_goal, parent, false);
         }
 
-        Goal goal = getGoal(position);
+        Request request = getRequest(position);
 
-        ((TextView) view.findViewById(R.id.goalTitle)).setText(goal.getTitle());
-        ((TextView) view.findViewById(R.id.goalDescription)).setText(goal.getDescription());
+        ((TextView) view.findViewById(R.id.goalTitle)).setText(request.getTitle());
+        ((TextView) view.findViewById(R.id.goalDescription)).setText(request.getDescription());
         TextView tv = view.findViewById(R.id.goalCondition);
         if (isAdmin) {
             tv.setVisibility(View.GONE);
         }
 
-        if (!goal.getCompleted()) {
+        if (!request.getCompleted()) {
             tv.setText(R.string.active);
             tv.setTextColor(Color.parseColor("#0277bd"));
         } else {
@@ -67,7 +67,7 @@ public class GoalAdapter extends BaseAdapter {
         return view;
     }
 
-    private Goal getGoal(int position) {
-        return ((Goal) getItem(position));
+    private Request getRequest(int position) {
+        return ((Request) getItem(position));
     }
 }

@@ -43,7 +43,9 @@ public class InternshipParticipantsClient extends BaseClient {
                 List<InternshipParticipant> list = gson.fromJson(response.toString(), new TypeToken<List<InternshipParticipant>>() {
                 }.getType());
 
-                updatable.update(list);
+                if (updatable != null) {
+                    updatable.update(list);
+                }
             }
 
         }, new Response.ErrorListener() {

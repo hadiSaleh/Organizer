@@ -382,7 +382,6 @@ public class InternshipInfoFragment extends Fragment {
                             @Override
                             public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                                 Uri downloadUrl = taskSnapshot.getUploadSessionUri();
-                                Toast.makeText(getContext(), downloadUrl.toString(), Toast.LENGTH_SHORT).show();
                                 imageCount++;
                                 internshipImageClient.updateImageCount(internshipId, imageCount);
                                 loadPhoto(imageCount - 1);

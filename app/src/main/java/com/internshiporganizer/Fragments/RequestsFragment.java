@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.ListFragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
@@ -14,35 +15,35 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
-import com.internshiporganizer.Adapters.GoalAdapter;
-import com.internshiporganizer.ApiClients.GoalClient;
+import com.internshiporganizer.Adapters.RequestAdapter;
+import com.internshiporganizer.ApiClients.RequestClient;
 import com.internshiporganizer.Constants;
-import com.internshiporganizer.Entities.Goal;
+import com.internshiporganizer.Entities.Request;
 import com.internshiporganizer.R;
 import com.internshiporganizer.Updatable;
-import com.internshiporganizer.activities.GoalActivity;
-import com.internshiporganizer.activities.GoalCreationActivity;
+import com.internshiporganizer.activities.RequestActivity;
+import com.internshiporganizer.activities.RequestCreationActivity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class GoalsFragment extends ListFragment implements Updatable<List<Goal>> {
+public class RequestsFragment extends ListFragment implements Updatable<List<Request>> {
     private long internshipId;
-    private GoalAdapter adapter;
-    private ArrayList<Goal> goals;
-    private GoalClient goalClient;
+    private RequestAdapter adapter;
+    private ArrayList<Request> requests;
+    private RequestClient requestClient;
     private String internshipTitle;
     private FloatingActionButton fab;
-    private SwipeRefreshLayout refreshGoals;
+    private SwipeRefreshLayout refreshRequests;
 
     private SharedPreferences sharedPreferences;
 
-    public GoalsFragment() {
+    public RequestsFragment() {
         // Required empty public constructor
     }
 
-    public static GoalsFragment newInstance(long internshipId) {
-        GoalsFragment f = new GoalsFragment();
+    public static RequestsFragment newInstance(long internshipId) {
+        RequestsFragment f = new RequestsFragment();
         Bundle bdl = new Bundle(2);
         bdl.putLong(Constants.ID, internshipId);
         f.setArguments(bdl);
@@ -56,25 +57,25 @@ public class GoalsFragment extends ListFragment implements Updatable<List<Goal>>
 
         sharedPreferences = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
 
-        refreshGoals = getView().findViewById(R.id.refreshGoals);
-        refreshGoals.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        refreshRequests = getView().findViewById(R.id.refreshRequests);
+        refreshRequests.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                loadGoals();
+                loadRequests();
             }
         });
 
-        goalClient = new GoalClient(getContext(), this);
-        loadGoals();
+        requestClient = new RequestClient(getContext(), this);
+        loadRequests();
 
         setFAB();
     }
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
-        final Goal goal = (Goal) adapter.getItem(position);
-        Intent intent = new Intent(getActivity(), GoalActivity.class);
-        intent.putExtra("goalId", goal.getId());
+        final Request request = (Request) adapter.getItem(position);
+        Intent intent = new Intent(getActivity(), RequestActivity.class);
+        intent.putExtra("requestId", request.getId());
         intent.putExtra("internshipTitle", internshipTitle);
         startActivity(intent);
     }
@@ -83,14 +84,14 @@ public class GoalsFragment extends ListFragment implements Updatable<List<Goal>>
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_goals, container, false);
+        return inflater.inflate(R.layout.fragment_requests, container, false);
     }
 
     @Override
-    public void update(List<Goal> items) {
-        goals.addAll(items);
+    public void update(List<Request> items) {
+        requests.addAll(items);
         adapter.notifyDataSetChanged();
-        refreshGoals.setRefreshing(false);
+        refreshRequests.setRefreshing(false);
     }
 
     public void setInternshipTitle(String internshipTitle) {
@@ -98,7 +99,7 @@ public class GoalsFragment extends ListFragment implements Updatable<List<Goal>>
     }
 
     private void setFAB() {
-        fab = getView().findViewById(R.id.fabGoals);
+        fab = getView().findViewById(R.id.fabRequests);
         boolean administrator = sharedPreferences.getBoolean(Constants.IS_ADMINISTRATOR, false);
         if (!administrator) {
             hideFAB();
@@ -107,21 +108,21 @@ public class GoalsFragment extends ListFragment implements Updatable<List<Goal>>
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getActivity(), GoalCreationActivity.class);
+                Intent intent = new Intent(getActivity(), RequestCreationActivity.class);
                 intent.putExtra("internshipId", internshipId);
                 startActivity(intent);
             }
         });
     }
 
-    private void loadGoals() {
-        goals = new ArrayList<>();
+    private void loadRequests() {
+        requests = new ArrayList<>();
         boolean isAdmin = sharedPreferences.getBoolean(Constants.IS_ADMINISTRATOR, false);
-        adapter = new GoalAdapter(getActivity(), goals, isAdmin);
+        adapter = new RequestAdapter(getActivity(), requests, isAdmin);
         setListAdapter(adapter);
 
         long employeeId = sharedPreferences.getLong(Constants.ID, 0);
-        goalClient.getAllByEmployeeAndInternship(internshipId, employeeId);
+        requestClient.getAllByEmployeeAndInternship(internshipId, employeeId);
     }
 
     @SuppressLint("RestrictedApi")

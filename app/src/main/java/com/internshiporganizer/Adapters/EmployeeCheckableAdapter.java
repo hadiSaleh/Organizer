@@ -54,7 +54,7 @@ public class EmployeeCheckableAdapter extends BaseAdapter {
         checkBox.setChecked(false);
 
         final ImageView photoIV = view.findViewById(R.id.imageView);
-        photoIV.setImageResource(R.drawable.kiki);
+        photoIV.setImageResource(R.drawable.icon_user);
         final Employee p = getEmployee(position);
         String name = p.getFirstName() + " " + p.getLastName();
         ((TextView) view.findViewById(R.id.textEmployeeName)).setText(name);

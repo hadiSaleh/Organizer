@@ -10,6 +10,7 @@ import com.internshiporganizer.Adapters.ViewPagerAdapter;
 import com.internshiporganizer.Fragments.ChatFragment;
 import com.internshiporganizer.Fragments.GoalsFragment;
 import com.internshiporganizer.Fragments.InternshipInfoFragment;
+import com.internshiporganizer.Fragments.RequestsFragment;
 import com.internshiporganizer.R;
 
 public class InternshipActivity extends AppCompatActivity {
@@ -40,6 +41,11 @@ public class InternshipActivity extends AppCompatActivity {
 
         InternshipInfoFragment internshipInfoFragment = InternshipInfoFragment.newInstance(internshipId);
         adapter.addFragment(internshipInfoFragment, "Info");
+
+        RequestsFragment requestsFragment = RequestsFragment.newInstance(internshipId);
+        adapter.addFragment(requestsFragment, "Requests");
+        requestsFragment.setInternshipTitle(internshipTitle);
+
 
         GoalsFragment goalsFragment = GoalsFragment.newInstance(internshipId);
         adapter.addFragment(goalsFragment, "Goals");

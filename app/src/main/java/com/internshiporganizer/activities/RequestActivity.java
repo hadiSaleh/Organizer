@@ -27,14 +27,14 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.internshiporganizer.Adapters.GoalAttachmentAdapter;
-import com.internshiporganizer.ApiClients.GoalAttachmentClient;
-import com.internshiporganizer.ApiClients.GoalClient;
+import com.internshiporganizer.Adapters.RequestAttachmentAdapter;
+import com.internshiporganizer.ApiClients.RequestAttachmentClient;
+import com.internshiporganizer.ApiClients.RequestClient;
 import com.internshiporganizer.Constants;
-import com.internshiporganizer.Entities.Goal;
-import com.internshiporganizer.Entities.GoalAttachment;
-import com.internshiporganizer.Updatable;
+import com.internshiporganizer.Entities.Request;
+import com.internshiporganizer.Entities.RequestAttachment;
 import com.internshiporganizer.R;
+import com.internshiporganizer.Updatable;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -42,20 +42,18 @@ import java.util.List;
 
 import static com.internshiporganizer.Constants.RESULT_LOAD_ATTACHMENT;
 
-public class GoalActivity extends AppCompatActivity implements Updatable<List<Goal>> {
-    private GoalAttachmentAdapter adapter;
-    private ArrayList<GoalAttachment> attachments;
-    private GoalAttachmentClient goalAttachmentClient;
-    private Goal goal;
+public class RequestActivity extends AppCompatActivity implements Updatable<List<Request>> {
+    private RequestAttachmentAdapter adapter;
+    private ArrayList<RequestAttachment> attachments;
+    private RequestAttachmentClient requestAttachmentClient;
+    private Request request;
 
-    private long goalId;
+    private long requestId;
     private String internshipTitle;
-    private GoalClient goalClient;
+    private RequestClient requestClient;
 
     private TextView titleTV;
     private TextView descriptionTV;
-    private TextView placeTV;
-    private TextView deadlineTV;
     private EditText noteET;
     private TextView addAttachmentTV;
     private Button completeButton;
@@ -64,33 +62,30 @@ public class GoalActivity extends AppCompatActivity implements Updatable<List<Go
     private SharedPreferences sharedPreferences;
     private StorageReference storageRef;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_goal);
+        setContentView(R.layout.activity_request);
 
         sharedPreferences = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         storageRef = FirebaseStorage.getInstance().getReference();
 
-        goalId = getIntent().getLongExtra("goalId", -1);
+        requestId = getIntent().getLongExtra("requestId", -1);
         internshipTitle = getIntent().getStringExtra("internshipTitle");
-        goalClient = new GoalClient(getApplicationContext(), this);
+        requestClient = new RequestClient(getApplicationContext(), this);
 
-        titleTV = findViewById(R.id.goalActivity_title);
-        descriptionTV = findViewById(R.id.goalActivity_description);
-        placeTV = findViewById(R.id.goalActivity_place);
-        deadlineTV = findViewById(R.id.goalActivity_deadline);
-        noteET = findViewById(R.id.goalActivity_note);
-        addAttachmentTV = findViewById(R.id.goalActivity_addAttachment);
-        completeButton = findViewById(R.id.goalActivity_complete);
+        titleTV = findViewById(R.id.requestActivity_title);
+        descriptionTV = findViewById(R.id.requestActivity_description);
+        noteET = findViewById(R.id.requestActivity_note);
+        addAttachmentTV = findViewById(R.id.requestActivity_addAttachment);
+        completeButton = findViewById(R.id.requestActivity_complete);
 
-        attachmentsLV = findViewById(R.id.goalActivity_attachments);
+        attachmentsLV = findViewById(R.id.requestActivity_attachments);
         attachmentsLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                final GoalAttachment attachment = (GoalAttachment) adapter.getItem(position);
-                DownloadManager downloadmanager = (DownloadManager) GoalActivity.this.getSystemService(Context.DOWNLOAD_SERVICE);
+                final RequestAttachment attachment = (RequestAttachment) adapter.getItem(position);
+                DownloadManager downloadmanager = (DownloadManager) RequestActivity.this.getSystemService(Context.DOWNLOAD_SERVICE);
                 DownloadManager.Request request = new DownloadManager.Request(Uri.parse(attachment.getUrl()));
                 request.setTitle(attachment.getName());
                 request.setDescription("Downloading");
@@ -102,10 +97,10 @@ public class GoalActivity extends AppCompatActivity implements Updatable<List<Go
             }
         });
 
-        goalAttachmentClient = new GoalAttachmentClient(this, new Updatable<List<GoalAttachment>>() {
+        requestAttachmentClient = new RequestAttachmentClient(this, new Updatable<List<RequestAttachment>>() {
             @Override
-            public void update(List<GoalAttachment> goalAttachments) {
-                attachments.addAll(goalAttachments);
+            public void update(List<RequestAttachment> requestAttachments) {
+                attachments.addAll(requestAttachments);
                 adapter.notifyDataSetChanged();
             }
         });
@@ -124,13 +119,13 @@ public class GoalActivity extends AppCompatActivity implements Updatable<List<Go
             public void onClick(View v) {
                 String note = noteET.getText().toString();
                 if (note.equals("")) {
-                    Toast.makeText(GoalActivity.this, "Note must not be empty", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(RequestActivity.this, "Note must not be empty", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
-                GoalClient client = new GoalClient(GoalActivity.this, new Updatable<List<Goal>>() {
+                RequestClient client = new RequestClient(RequestActivity.this, new Updatable<List<Request>>() {
                     @Override
-                    public void update(List<Goal> goals) {
+                    public void update(List<Request> goals) {
                         completeButton.setVisibility(View.GONE);
                         addAttachmentTV.setVisibility(View.GONE);
 
@@ -138,18 +133,18 @@ public class GoalActivity extends AppCompatActivity implements Updatable<List<Go
                         noteET.setCursorVisible(false);
                         noteET.setKeyListener(null);
                         noteET.setBackgroundColor(Color.TRANSPARENT);
-                        Toast.makeText(GoalActivity.this, "Goal updated", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RequestActivity.this, "Request updated", Toast.LENGTH_SHORT).show();
                     }
                 });
-                goal.setNote(note);
-                goal.setCompleted(true);
-                client.completeGoal(goal);
+                request.setNote(note);
+                request.setCompleted(true);
+                client.completeRequest(request);
             }
         });
 
         setViewVisibility();
 
-        loadGoal();
+        loadRequest();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setElevation(0);
@@ -168,20 +163,18 @@ public class GoalActivity extends AppCompatActivity implements Updatable<List<Go
     }
 
     @Override
-    public void update(List<Goal> items) {
-        Goal goal = items.get(0);
-        this.goal = goal;
+    public void update(List<Request> items) {
+        Request request = items.get(0);
+        this.request = request;
 
-        titleTV.setText(goal.getTitle());
-        descriptionTV.setText(goal.getDescription());
-        placeTV.setText(goal.getPlace());
-        deadlineTV.setText(goal.getDeadline().substring(0, 10));
+        titleTV.setText(request.getTitle());
+        descriptionTV.setText(request.getDescription());
 
-        if (goal.getNote() != null) {
-            noteET.setText(goal.getNote());
+        if (request.getNote() != null) {
+            noteET.setText(request.getNote());
         }
 
-        if (goal.getCompleted()) {
+        if (request.getCompleted()) {
             completeButton.setVisibility(View.GONE);
             addAttachmentTV.setVisibility(View.GONE);
 
@@ -196,10 +189,10 @@ public class GoalActivity extends AppCompatActivity implements Updatable<List<Go
 
     private void loadAttachments() {
         attachments = new ArrayList<>();
-        adapter = new GoalAttachmentAdapter(this, attachments);
+        adapter = new RequestAttachmentAdapter(this, attachments);
         attachmentsLV.setAdapter(adapter);
 
-        goalAttachmentClient.getAllByGoal(goalId);
+        requestAttachmentClient.getAllByRequest(requestId);
     }
 
     private void setViewVisibility() {
@@ -211,8 +204,8 @@ public class GoalActivity extends AppCompatActivity implements Updatable<List<Go
         }
     }
 
-    private void loadGoal() {
-        goalClient.getById(goalId);
+    private void loadRequest() {
+        requestClient.getById(requestId);
     }
 
     @Override
@@ -239,17 +232,17 @@ public class GoalActivity extends AppCompatActivity implements Updatable<List<Go
                 displayName = myFile.getName();
             }
 
-            final GoalAttachment goalAttachment = new GoalAttachment();
-            goalAttachment.setGoal(goal);
-            goalAttachment.setName(displayName);
-            final GoalAttachmentClient client = new GoalAttachmentClient(this, new Updatable<List<GoalAttachment>>() {
+            final RequestAttachment requestAttachment = new RequestAttachment();
+            requestAttachment.setRequest(request);
+            requestAttachment.setName(displayName);
+            final RequestAttachmentClient client = new RequestAttachmentClient(this, new Updatable<List<RequestAttachment>>() {
                 @Override
-                public void update(List<GoalAttachment> goalAttachments) {
+                public void update(List<RequestAttachment> requestAttachments) {
                     loadAttachments();
                 }
             });
 
-            final StorageReference riversRef = storageRef.child("attachments/goals/" + goalId + "/" + displayName);
+            final StorageReference riversRef = storageRef.child("attachments/requests/" + requestId + "/" + displayName);
             riversRef.putFile(uri).continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                 @Override
                 public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
@@ -263,10 +256,10 @@ public class GoalActivity extends AppCompatActivity implements Updatable<List<Go
                 public void onComplete(@NonNull Task<Uri> task) {
                     if (task.isSuccessful()) {
                         Uri downloadUri = task.getResult();
-                        goalAttachment.setUrl(downloadUri.toString());
-                        client.add(goalAttachment);
+                        requestAttachment.setUrl(downloadUri.toString());
+                        client.add(requestAttachment);
                     } else {
-                        Toast.makeText(GoalActivity.this, "Cannot add attachment", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(RequestActivity.this, "Cannot add attachment", Toast.LENGTH_SHORT).show();
                     }
                 }
             });

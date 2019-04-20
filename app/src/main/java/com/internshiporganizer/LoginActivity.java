@@ -1,12 +1,8 @@
 package com.internshiporganizer;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -15,18 +11,22 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.internshiporganizer.ApiClients.AuthCredentialsClient;
+import com.internshiporganizer.ApiClients.EmployeeClient;
 import com.internshiporganizer.Entities.AuthCredentials;
 import com.internshiporganizer.Entities.Employee;
+import com.internshiporganizer.activities.RegistrationActivity;
 
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 
-import static com.internshiporganizer.Constants.REQUEST_WRITE_EXTERNAL_STORAGE;
+import java.util.List;
 
 public class LoginActivity extends AppCompatActivity implements Updatable<Employee> {
     private EditText activityLogin_editTextMail;
     private EditText activityLogin_editTextPassword;
     private Button enterButton;
+    private Button registrationButton;
+
     private SharedPreferences sharedPreferences;
     private String email;
     private String passwordHash;
@@ -44,6 +44,7 @@ public class LoginActivity extends AppCompatActivity implements Updatable<Employ
         enterButton = findViewById(R.id.activityLogin_button);
         activityLogin_editTextMail = findViewById(R.id.activityLogin_editTextMail);
         activityLogin_editTextPassword = findViewById(R.id.activityLogin_editTextPassword);
+        registrationButton = findViewById(R.id.activityLogin_textViewReg);
 
         sharedPreferences = getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         checkPreferences();
@@ -55,6 +56,14 @@ public class LoginActivity extends AppCompatActivity implements Updatable<Employ
                 String password = activityLogin_editTextPassword.getText().toString();
                 passwordHash = new String(Hex.encodeHex(DigestUtils.sha256(password)));
                 tryLogin();
+            }
+        });
+
+        registrationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this, RegistrationActivity.class);
+                startActivity(intent);
             }
         });
     }
@@ -69,8 +78,24 @@ public class LoginActivity extends AppCompatActivity implements Updatable<Employ
                 .putBoolean(Constants.IS_ADMINISTRATOR, employee.getAdministrator())
                 .putLong(Constants.ID, employee.getId()).apply();
 
-        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-        startActivityForResult(intent, Constants.REQUEST_EXIT);
+
+        if (sharedPreferences.contains(Constants.FIREBASE_TOKEN)) {
+            Employee updatedEmployee = new Employee();
+            employee.setId(sharedPreferences.getLong(Constants.ID, -1));
+            employee.setFireBaseToken(sharedPreferences.getString(Constants.FIREBASE_TOKEN, ""));
+
+            EmployeeClient employeeClient = new EmployeeClient(this, new Updatable<List<Employee>>() {
+                @Override
+                public void update(List<Employee> employees) {
+                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                    startActivityForResult(intent, Constants.REQUEST_EXIT);
+                }
+            });
+            employeeClient.updateToken(employee);
+        } else {
+            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+            startActivityForResult(intent, Constants.REQUEST_EXIT);
+        }
     }
 
     private void checkPreferences() {

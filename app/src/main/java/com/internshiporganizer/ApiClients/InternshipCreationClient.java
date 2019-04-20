@@ -10,6 +10,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.RemoteMessage;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.internshiporganizer.Entities.Employee;
@@ -113,6 +115,18 @@ public class InternshipCreationClient extends BaseClient {
                 }.getType());
                 ArrayList<InternshipParticipant> arrayList = new ArrayList<>();
                 arrayList.add(internshipParticipant);
+
+//                String registrationToken = "YOUR_REGISTRATION_TOKEN";
+//                RemoteMessage remoteMessage = new RemoteMessage
+//                FirebaseMessaging.getInstance().send();
+//                        Message message = Message.builder()
+//                        .putData("score", "850")
+//                        .putData("time", "2:45")
+//                        .setToken(registrationToken)
+//                        .build();
+//
+//                String response = FirebaseMessaging.getInstance().send(message);
+
             }
 
         }, new Response.ErrorListener() {

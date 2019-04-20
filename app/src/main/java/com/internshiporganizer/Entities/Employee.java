@@ -8,6 +8,7 @@ public class Employee {
     private String city;
     private Office office;
     private boolean administrator;
+    private String fireBaseToken;
 
     public long getId() {
         return id;
@@ -63,5 +64,13 @@ public class Employee {
 
     public void setAdministrator(boolean administrator) {
         this.administrator = administrator;
+    }
+
+    public String getFireBaseToken() {
+        return fireBaseToken;
+    }
+
+    public void setFireBaseToken(String fireBaseToken) {
+        this.fireBaseToken = fireBaseToken;
     }
 }

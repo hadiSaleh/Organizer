@@ -3,7 +3,6 @@ package com.internshiporganizer.ApiClients;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -14,8 +13,8 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.internshiporganizer.Entities.Employee;
-import com.internshiporganizer.Entities.Goal;
 import com.internshiporganizer.Entities.Internship;
+import com.internshiporganizer.Entities.Request;
 import com.internshiporganizer.Updatable;
 
 import org.json.JSONArray;
@@ -25,62 +24,62 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GoalClient extends BaseClient {
-    private static final String goalsUrl = "/goals";
+public class RequestClient extends BaseClient {
+    private static final String requstsUrl = "/requests";
     private RequestQueue queue;
     private Context context;
-    private Updatable<List<Goal>> updatable;
+    private Updatable<List<Request>> updatable;
 
-    public GoalClient(Context context, Updatable<List<Goal>> updatable) {
+    public RequestClient(Context context, Updatable<List<Request>> updatable) {
         this.context = context;
         this.updatable = updatable;
         queue = Volley.newRequestQueue(context);
     }
 
-    public void createGoal(Goal newGoal, Internship internship, List<Employee> employees) {
-        String url = baseUrl + goalsUrl;
+    public void createRequest(Request newRequest, Internship internship, List<Employee> employees) {
+        String url = baseUrl + requstsUrl;
 
         for (Employee employee : employees) {
-            Goal goal = new Goal(newGoal);
-            goal.setInternship(internship);
-            goal.setEmployee(employee);
-            post(url, goal);
+            Request request = new Request(newRequest);
+            request.setInternship(internship);
+            request.setEmployee(employee);
+            post(url, request);
         }
     }
 
-    public void completeGoal(Goal goal) {
-        String url = baseUrl + goalsUrl + "/complete";
+    public void completeRequest(Request request) {
+        String url = baseUrl + requstsUrl + "/complete";
 
-        post(url, goal);
+        post(url, request);
     }
 
     public void getAllByEmployeeAndInternship(long internshipId, long employeeId) {
-        String url = baseUrl + goalsUrl + "/byInternship/" + internshipId + "/byEmployee/" + employeeId;
+        String url = baseUrl + requstsUrl + "/byInternship/" + internshipId + "/byEmployee/" + employeeId;
         get(url);
     }
 
     public void getById(long id) {
-        String url = baseUrl + goalsUrl + "/" + id;
+        String url = baseUrl + requstsUrl + "/" + id;
         getOne(url);
     }
 
-    private void post(String url, Goal newGoal) {
+    private void post(String url, Request newRequest) {
         final Gson gson = new Gson();
         JSONObject jsonObject;
         try {
-            jsonObject = new JSONObject(gson.toJson(newGoal));
+            jsonObject = new JSONObject(gson.toJson(newRequest));
         } catch (JSONException e) {
             e.printStackTrace();
             return;
         }
 
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.POST, url, jsonObject, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(com.android.volley.Request.Method.POST, url, jsonObject, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Goal goal = gson.fromJson(response.toString(), new TypeToken<Goal>() {
+                Request request = gson.fromJson(response.toString(), new TypeToken<Request>() {
                 }.getType());
-                ArrayList<Goal> arrayList = new ArrayList<>();
-                arrayList.add(goal);
+                ArrayList<Request> arrayList = new ArrayList<>();
+                arrayList.add(request);
 
                 if (updatable != null) {
                     updatable.update(arrayList);
@@ -91,7 +90,7 @@ public class GoalClient extends BaseClient {
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.e("Error: ", error.getMessage());
-                Toast.makeText(context, "Cannot create or update goal", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Cannot create or update request", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -99,11 +98,11 @@ public class GoalClient extends BaseClient {
     }
 
     private void get(String url) {
-        JsonArrayRequest jsObjRequest = new JsonArrayRequest(Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
+        JsonArrayRequest jsObjRequest = new JsonArrayRequest(com.android.volley.Request.Method.GET, url, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 Gson gson = new Gson();
-                List<Goal> list = gson.fromJson(response.toString(), new TypeToken<List<Goal>>() {
+                List<Request> list = gson.fromJson(response.toString(), new TypeToken<List<Request>>() {
                 }.getType());
 
                 if (updatable != null) {
@@ -115,7 +114,7 @@ public class GoalClient extends BaseClient {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(context, "Cannot load goals", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Cannot load requests", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -123,15 +122,15 @@ public class GoalClient extends BaseClient {
     }
 
     private void getOne(String url) {
-        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(com.android.volley.Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Gson gson = new Gson();
-                Goal goal = gson.fromJson(response.toString(), new TypeToken<Goal>() {
+                Request request = gson.fromJson(response.toString(), new TypeToken<Request>() {
                 }.getType());
 
-                ArrayList<Goal> arrayList = new ArrayList<>();
-                arrayList.add(goal);
+                ArrayList<Request> arrayList = new ArrayList<>();
+                arrayList.add(request);
 
                 if (updatable != null) {
                     updatable.update(arrayList);
@@ -142,7 +141,7 @@ public class GoalClient extends BaseClient {
 
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(context, "Cannot load goal", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Cannot load request", Toast.LENGTH_SHORT).show();
             }
         });
 

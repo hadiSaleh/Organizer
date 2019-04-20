@@ -1,29 +1,24 @@
 package com.internshiporganizer.Entities;
 
-
-public class Goal {
+public class Request {
     private long id;
     private Internship internship;
     private Employee employee;
     private String title;
     private String description;
-    private String place;
     private boolean completed;
-    private String deadline;
     private String note;
 
-    public Goal() {
+    public Request(){
     }
 
-    public Goal(Goal goal) {
-        title = goal.getTitle();
-        description = goal.getDescription();
-        place = goal.getPlace();
-        completed = goal.getCompleted();
-        deadline = goal.getDeadline();
-        internship = goal.getInternship();
-        employee = goal.getEmployee();
-        note = goal.getNote();
+    public Request(Request request) {
+        title = request.getTitle();
+        description = request.getDescription();
+        completed = request.getCompleted();
+        internship = request.getInternship();
+        employee = request.getEmployee();
+        note = request.getNote();
     }
 
     public long getId() {
@@ -66,28 +61,12 @@ public class Goal {
         this.description = description;
     }
 
-    public String getPlace() {
-        return place;
-    }
-
-    public void setPlace(String place) {
-        this.place = place;
-    }
-
     public boolean getCompleted() {
         return completed;
     }
 
     public void setCompleted(boolean completed) {
         this.completed = completed;
-    }
-
-    public String getDeadline() {
-        return deadline;
-    }
-
-    public void setDeadline(String deadline) {
-        this.deadline = deadline;
     }
 
     public String getNote() {
