@@ -27,16 +27,15 @@ public class FullScreenImageActivity extends AppCompatActivity {
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#000000")));
 //        getSupportActionBar().hide();
 
-        if(callingActivityIntent != null) {
+        if (callingActivityIntent != null) {
             Uri imageUri = callingActivityIntent.getData();
-            if(imageUri != null && fullScreenImageView != null) {
+            if (imageUri != null && fullScreenImageView != null) {
                 Glide.with(this)
                         .load(imageUri)
                         .into(fullScreenImageView);
             }
         }
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

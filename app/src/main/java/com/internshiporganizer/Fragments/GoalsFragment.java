@@ -28,6 +28,7 @@ import java.util.List;
 
 public class GoalsFragment extends ListFragment implements Updatable<List<Goal>> {
     private long internshipId;
+    private boolean isCompleted;
     private GoalAdapter adapter;
     private ArrayList<Goal> goals;
     private GoalClient goalClient;
@@ -41,10 +42,11 @@ public class GoalsFragment extends ListFragment implements Updatable<List<Goal>>
         // Required empty public constructor
     }
 
-    public static GoalsFragment newInstance(long internshipId) {
+    public static GoalsFragment newInstance(long internshipId, boolean isCompleted) {
         GoalsFragment f = new GoalsFragment();
         Bundle bdl = new Bundle(2);
         bdl.putLong(Constants.ID, internshipId);
+        bdl.putBoolean("isCompleted", isCompleted);
         f.setArguments(bdl);
         return f;
     }
@@ -53,6 +55,7 @@ public class GoalsFragment extends ListFragment implements Updatable<List<Goal>>
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         internshipId = getArguments().getLong(Constants.ID);
+        isCompleted = getArguments().getBoolean("isCompleted");
 
         sharedPreferences = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
 
@@ -76,6 +79,7 @@ public class GoalsFragment extends ListFragment implements Updatable<List<Goal>>
         Intent intent = new Intent(getActivity(), GoalActivity.class);
         intent.putExtra("goalId", goal.getId());
         intent.putExtra("internshipTitle", internshipTitle);
+        intent.putExtra("isCompleted", isCompleted);
         startActivity(intent);
     }
 
@@ -100,7 +104,7 @@ public class GoalsFragment extends ListFragment implements Updatable<List<Goal>>
     private void setFAB() {
         fab = getView().findViewById(R.id.fabGoals);
         boolean administrator = sharedPreferences.getBoolean(Constants.IS_ADMINISTRATOR, false);
-        if (!administrator) {
+        if (!administrator || isCompleted) {
             hideFAB();
         }
 

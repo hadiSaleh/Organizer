@@ -49,6 +49,7 @@ public class RequestActivity extends AppCompatActivity implements Updatable<List
     private Request request;
 
     private long requestId;
+    private boolean isCompleted;
     private String internshipTitle;
     private RequestClient requestClient;
 
@@ -72,6 +73,7 @@ public class RequestActivity extends AppCompatActivity implements Updatable<List
 
         requestId = getIntent().getLongExtra("requestId", -1);
         internshipTitle = getIntent().getStringExtra("internshipTitle");
+        isCompleted = getIntent().getBooleanExtra("isCompleted", false);
         requestClient = new RequestClient(getApplicationContext(), this);
 
         titleTV = findViewById(R.id.requestActivity_title);
@@ -196,6 +198,17 @@ public class RequestActivity extends AppCompatActivity implements Updatable<List
     }
 
     private void setViewVisibility() {
+        if (isCompleted) {
+            completeButton.setVisibility(View.GONE);
+            addAttachmentTV.setVisibility(View.GONE);
+
+            noteET.setFocusable(false);
+            noteET.setCursorVisible(false);
+            noteET.setKeyListener(null);
+            noteET.setBackgroundColor(Color.TRANSPARENT);
+            return;
+        }
+
         boolean administrator = sharedPreferences.getBoolean(Constants.IS_ADMINISTRATOR, false);
         if (administrator) {
             findViewById(R.id.cardView6).setVisibility(View.GONE);

@@ -17,10 +17,16 @@ public class GoalAdapter extends BaseAdapter {
     private LayoutInflater lInflater;
     private ArrayList<Goal> objects;
     private boolean isAdmin;
+    private boolean isInternshipCompleted;
 
     public GoalAdapter(Context context, ArrayList<Goal> goals, boolean isAdmin) {
+        this(context, goals, isAdmin, false);
+    }
+
+    public GoalAdapter(Context context, ArrayList<Goal> goals, boolean isAdmin, boolean isInternshipCompleted) {
         objects = goals;
         this.isAdmin = isAdmin;
+        this.isInternshipCompleted = isInternshipCompleted;
         lInflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
@@ -52,6 +58,19 @@ public class GoalAdapter extends BaseAdapter {
         ((TextView) view.findViewById(R.id.goalTitle)).setText(goal.getTitle());
         ((TextView) view.findViewById(R.id.goalDescription)).setText(goal.getDescription());
         TextView tv = view.findViewById(R.id.goalCondition);
+
+        if (isInternshipCompleted) {
+            if (!goal.getCompleted()) {
+                tv.setText(R.string.not_fulfilled);
+                tv.setTextColor(Color.parseColor("#BDBDBD"));
+            } else {
+                tv.setText(R.string.closed);
+                tv.setTextColor(Color.parseColor("#0277bd"));
+            }
+
+            return view;
+        }
+
         if (isAdmin) {
             tv.setVisibility(View.GONE);
         }

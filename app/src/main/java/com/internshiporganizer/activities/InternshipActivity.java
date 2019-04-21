@@ -8,6 +8,7 @@ import android.view.MenuItem;
 
 import com.internshiporganizer.Adapters.ViewPagerAdapter;
 import com.internshiporganizer.Fragments.ChatFragment;
+import com.internshiporganizer.Fragments.GoalEmployeesFragment;
 import com.internshiporganizer.Fragments.GoalsFragment;
 import com.internshiporganizer.Fragments.InternshipInfoFragment;
 import com.internshiporganizer.Fragments.RequestsFragment;
@@ -18,13 +19,15 @@ public class InternshipActivity extends AppCompatActivity {
     private ViewPager viewPager;
     private String internshipTitle;
     private long internshipId;
+    private boolean isCompleted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_internship);
         internshipTitle = getIntent().getStringExtra("internshipTitle");
-        internshipId = getIntent().getLongExtra("internshipId",-1);
+        internshipId = getIntent().getLongExtra("internshipId", -1);
+        isCompleted = getIntent().getBooleanExtra("isCompleted", false);
 
         viewPager = findViewById(R.id.viewpager);
         setupViewPager(viewPager);
@@ -42,14 +45,19 @@ public class InternshipActivity extends AppCompatActivity {
         InternshipInfoFragment internshipInfoFragment = InternshipInfoFragment.newInstance(internshipId);
         adapter.addFragment(internshipInfoFragment, "Info");
 
-        RequestsFragment requestsFragment = RequestsFragment.newInstance(internshipId);
-        adapter.addFragment(requestsFragment, "Requests");
-        requestsFragment.setInternshipTitle(internshipTitle);
+        if (isCompleted) {
+            GoalEmployeesFragment goalEmployeesFragment = GoalEmployeesFragment.newInstance(internshipId);
+            adapter.addFragment(goalEmployeesFragment, "Goals");
+            goalEmployeesFragment.setInternshipTitle(internshipTitle);
+        } else {
+            RequestsFragment requestsFragment = RequestsFragment.newInstance(internshipId, isCompleted);
+            adapter.addFragment(requestsFragment, "Requests");
+            requestsFragment.setInternshipTitle(internshipTitle);
 
-
-        GoalsFragment goalsFragment = GoalsFragment.newInstance(internshipId);
-        adapter.addFragment(goalsFragment, "Goals");
-        goalsFragment.setInternshipTitle(internshipTitle);
+            GoalsFragment goalsFragment = GoalsFragment.newInstance(internshipId, isCompleted);
+            adapter.addFragment(goalsFragment, "Goals");
+            goalsFragment.setInternshipTitle(internshipTitle);
+        }
 
         ChatFragment chatFragment = ChatFragment.newInstance(internshipId);
         adapter.addFragment(chatFragment, "Chat");

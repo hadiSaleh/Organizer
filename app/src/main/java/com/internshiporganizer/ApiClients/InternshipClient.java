@@ -52,7 +52,12 @@ public class InternshipClient extends BaseClient {
 
     public void create(Internship newInternship) {
         String url = baseUrl + internshipsUrl;
-        create(url, newInternship);
+        post(url, newInternship);
+    }
+
+    public void complete(Internship internship) {
+        String url = baseUrl + internshipsUrl + "/complete";
+        post(url, internship);
     }
 
     private void get(String url) {
@@ -102,7 +107,7 @@ public class InternshipClient extends BaseClient {
         queue.add(jsObjRequest);
     }
 
-    private void create(String url, Internship newInternship) {
+    private void post(String url, Internship newInternship) {
         final Gson gson = new Gson();
         JSONObject jsonObject;
         try {
@@ -129,7 +134,7 @@ public class InternshipClient extends BaseClient {
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.e("Error: ", error.getMessage());
-                Toast.makeText(context, "Cannot create internship", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Cannot create or update internship", Toast.LENGTH_SHORT).show();
             }
         });
 

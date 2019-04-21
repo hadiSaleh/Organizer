@@ -45,7 +45,8 @@
         <activity android:name=".activities.ProfileActivity" />
         <activity android:name=".activities.RequestCreationActivity" />
         <activity android:name=".activities.RequestActivity" />
-        <activity android:name=".activities.RegistrationActivity"></activity>
+        <activity android:name=".activities.RegistrationActivity" />
+        <activity android:name=".activities.EmployeeGoalsActivity"></activity>
     </application>
 
 </manifest>

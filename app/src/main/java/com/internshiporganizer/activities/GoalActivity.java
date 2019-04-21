@@ -49,6 +49,7 @@ public class GoalActivity extends AppCompatActivity implements Updatable<List<Go
     private Goal goal;
 
     private long goalId;
+    private boolean isCompleted;
     private String internshipTitle;
     private GoalClient goalClient;
 
@@ -75,6 +76,7 @@ public class GoalActivity extends AppCompatActivity implements Updatable<List<Go
 
         goalId = getIntent().getLongExtra("goalId", -1);
         internshipTitle = getIntent().getStringExtra("internshipTitle");
+        isCompleted = getIntent().getBooleanExtra("isCompleted", false);
         goalClient = new GoalClient(getApplicationContext(), this);
 
         titleTV = findViewById(R.id.goalActivity_title);
@@ -203,8 +205,19 @@ public class GoalActivity extends AppCompatActivity implements Updatable<List<Go
     }
 
     private void setViewVisibility() {
+        if (isCompleted) {
+            completeButton.setVisibility(View.GONE);
+            addAttachmentTV.setVisibility(View.GONE);
+
+            noteET.setFocusable(false);
+            noteET.setCursorVisible(false);
+            noteET.setKeyListener(null);
+            noteET.setBackgroundColor(Color.TRANSPARENT);
+            return;
+        }
+
         boolean administrator = sharedPreferences.getBoolean(Constants.IS_ADMINISTRATOR, false);
-        if (administrator) {
+        if (administrator || isCompleted) {
             findViewById(R.id.cardView6).setVisibility(View.GONE);
             findViewById(R.id.cardView7).setVisibility(View.GONE);
             completeButton.setVisibility(View.GONE);

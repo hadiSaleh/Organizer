@@ -77,6 +77,7 @@ public class InternshipsFragment extends ListFragment implements Updatable<List<
         Intent intent = new Intent(getActivity(), InternshipActivity.class);
         intent.putExtra("internshipTitle", internship.getTitle());
         intent.putExtra("internshipId", internship.getId());
+        intent.putExtra("isCompleted", !internship.getActive());
 
         startActivity(intent);
     }

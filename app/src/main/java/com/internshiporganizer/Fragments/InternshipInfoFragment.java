@@ -24,6 +24,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -85,11 +86,13 @@ public class InternshipInfoFragment extends Fragment {
     private LinearLayout photosLL;
     private TextView addAttachmentTV;
     private ListView attachmentLV;
+    private Button completeButton;
 
     private Bitmap selectedImage;
     private int attachmentCount;
     private int imageCount;
-    boolean isImageFitToScreen;
+    private boolean isImageFitToScreen;
+    private boolean isCompleted;
 
     public InternshipInfoFragment() {
     }
@@ -111,7 +114,6 @@ public class InternshipInfoFragment extends Fragment {
         storageRef = FirebaseStorage.getInstance().getReference();
         sharedPreferences = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
         setViews();
-        setViewsVisibility();
 
         internshipImageClient = new InternshipImageClient(getContext());
         internshipAttachmentClient = new InternshipAttachmentClient(getContext(), new Updatable<List<InternshipAttachment>>() {
@@ -131,6 +133,8 @@ public class InternshipInfoFragment extends Fragment {
             public void update(List<Internship> internships) {
                 Internship internship = internships.get(0);
                 imageCount = internship.getImageCount();
+                isCompleted = !internship.getActive();
+                setViewsVisibility();
 
                 titleTV.setText(internship.getTitle());
                 descriptionTV.setText(internship.getDescription());
@@ -185,6 +189,7 @@ public class InternshipInfoFragment extends Fragment {
         addPhoto = getView().findViewById(R.id.currentInternship_addPhoto);
         photosLL = getView().findViewById(R.id.currentInternship_photos);
         addAttachmentTV = getView().findViewById(R.id.currentInternship_addAttachment);
+        completeButton = getView().findViewById(R.id.currentInternship_buttonComplete);
         attachmentLV = getView().findViewById(R.id.currentInternship_attachments);
         attachmentLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -243,13 +248,34 @@ public class InternshipInfoFragment extends Fragment {
                 return false;
             }
         });
+
+        completeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InternshipClient client = new InternshipClient(getContext(), new Updatable<List<Internship>>() {
+                    @Override
+                    public void update(List<Internship> internships) {
+                        Toast.makeText(getContext(), "Internship completed!", Toast.LENGTH_LONG).show();
+
+                        isCompleted = true;
+                        setViewsVisibility();
+                    }
+                });
+
+                Internship internship = new Internship();
+                internship.setId(internshipId);
+                internship.setActive(false);
+                client.complete(internship);
+            }
+        });
     }
 
     private void setViewsVisibility() {
         boolean administrator = sharedPreferences.getBoolean(Constants.IS_ADMINISTRATOR, false);
-        if (!administrator) {
+        if (!administrator || isCompleted) {
             addPhoto.setVisibility(View.GONE);
             addAttachmentTV.setVisibility(View.GONE);
+            completeButton.setVisibility(View.GONE);
         }
     }
 

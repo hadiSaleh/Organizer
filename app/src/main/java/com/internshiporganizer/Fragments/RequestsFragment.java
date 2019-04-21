@@ -29,6 +29,7 @@ import java.util.List;
 
 public class RequestsFragment extends ListFragment implements Updatable<List<Request>> {
     private long internshipId;
+    private boolean isCompleted;
     private RequestAdapter adapter;
     private ArrayList<Request> requests;
     private RequestClient requestClient;
@@ -42,10 +43,11 @@ public class RequestsFragment extends ListFragment implements Updatable<List<Req
         // Required empty public constructor
     }
 
-    public static RequestsFragment newInstance(long internshipId) {
+    public static RequestsFragment newInstance(long internshipId, boolean isCompleted) {
         RequestsFragment f = new RequestsFragment();
         Bundle bdl = new Bundle(2);
         bdl.putLong(Constants.ID, internshipId);
+        bdl.putBoolean("isCompleted", isCompleted);
         f.setArguments(bdl);
         return f;
     }
@@ -54,6 +56,7 @@ public class RequestsFragment extends ListFragment implements Updatable<List<Req
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         internshipId = getArguments().getLong(Constants.ID);
+        isCompleted = getArguments().getBoolean("isCompleted");
 
         sharedPreferences = getActivity().getSharedPreferences(Constants.APP_PREFERENCES, Context.MODE_PRIVATE);
 
@@ -77,6 +80,7 @@ public class RequestsFragment extends ListFragment implements Updatable<List<Req
         Intent intent = new Intent(getActivity(), RequestActivity.class);
         intent.putExtra("requestId", request.getId());
         intent.putExtra("internshipTitle", internshipTitle);
+        intent.putExtra("isCompleted", isCompleted);
         startActivity(intent);
     }
 
@@ -101,7 +105,7 @@ public class RequestsFragment extends ListFragment implements Updatable<List<Req
     private void setFAB() {
         fab = getView().findViewById(R.id.fabRequests);
         boolean administrator = sharedPreferences.getBoolean(Constants.IS_ADMINISTRATOR, false);
-        if (!administrator) {
+        if (!administrator || isCompleted) {
             hideFAB();
         }
 
