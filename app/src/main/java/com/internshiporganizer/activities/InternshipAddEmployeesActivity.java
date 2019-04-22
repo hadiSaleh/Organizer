@@ -115,6 +115,9 @@ public class InternshipAddEmployeesActivity extends AppCompatActivity {
         String organization = intent.getStringExtra("organization");
         String email = intent.getStringExtra("email");
         String phone = intent.getStringExtra("phone");
+        String instagram = intent.getStringExtra("instagram");
+        String twitter = intent.getStringExtra("twitter");
+        String facebook = intent.getStringExtra("facebook");
         if (!organization.equals("")) {
             newInternship.setOrganization(organization);
         }
@@ -123,6 +126,28 @@ public class InternshipAddEmployeesActivity extends AppCompatActivity {
         }
         if (!phone.equals("")) {
             newInternship.setPhoneNumber(phone);
+        }
+
+        if (!instagram.equals("")) {
+            if (instagram.startsWith("http://") || instagram.startsWith("https://")) {
+                newInternship.setInstagram(instagram);
+            } else {
+                newInternship.setInstagram("https://www.instagram.com/" + instagram);
+            }
+        }
+        if (!twitter.equals("")) {
+            if (twitter.startsWith("http://") || twitter.startsWith("https://")) {
+                newInternship.setTwitter(twitter);
+            } else {
+                newInternship.setTwitter("https://twitter.com/" + twitter);
+            }
+        }
+        if (!facebook.equals("")) {
+            if (facebook.startsWith("http://") || facebook.startsWith("https://")) {
+                newInternship.setFacebook(facebook);
+            } else {
+                newInternship.setFacebook("https://facebook.com/" + facebook);
+            }
         }
     }
 

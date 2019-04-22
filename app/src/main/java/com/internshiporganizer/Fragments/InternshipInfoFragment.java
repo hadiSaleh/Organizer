@@ -86,6 +86,9 @@ public class InternshipInfoFragment extends Fragment {
     private LinearLayout photosLL;
     private TextView addAttachmentTV;
     private ListView attachmentLV;
+    private ImageView instagramIV;
+    private ImageView twitterIV;
+    private ImageView facebookIV;
     private Button completeButton;
 
     private Bitmap selectedImage;
@@ -131,7 +134,7 @@ public class InternshipInfoFragment extends Fragment {
         internshipClient = new InternshipClient(getContext(), new Updatable<List<Internship>>() {
             @Override
             public void update(List<Internship> internships) {
-                Internship internship = internships.get(0);
+                final Internship internship = internships.get(0);
                 imageCount = internship.getImageCount();
                 isCompleted = !internship.getActive();
                 setViewsVisibility();
@@ -164,6 +167,46 @@ public class InternshipInfoFragment extends Fragment {
                     phoneTV.setText(internship.getPhoneNumber());
                 }
 
+                if ((internship.getInstagram() == null || internship.getInstagram().isEmpty())
+                        && (internship.getTwitter() == null || internship.getTwitter().isEmpty())
+                        && (internship.getFacebook() == null || internship.getFacebook().isEmpty())) {
+                    getView().findViewById(R.id.cardView9).setVisibility(View.GONE);
+                } else {
+                    if (internship.getInstagram() == null || internship.getInstagram().isEmpty()) {
+                        instagramIV.setVisibility(View.GONE);
+                    } else {
+                        instagramIV.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent openURL = new Intent(Intent.ACTION_VIEW, Uri.parse(internship.getInstagram()));
+                                startActivity(openURL);
+                            }
+                        });
+                    }
+                    if (internship.getTwitter() == null || internship.getTwitter().isEmpty()) {
+                        twitterIV.setVisibility(View.GONE);
+                    } else {
+                        twitterIV.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent openURL = new Intent(Intent.ACTION_VIEW, Uri.parse(internship.getTwitter()));
+                                startActivity(openURL);
+                            }
+                        });
+                    }
+                    if (internship.getFacebook() == null || internship.getFacebook().isEmpty()) {
+                        facebookIV.setVisibility(View.GONE);
+                    } else {
+                        facebookIV.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent openURL = new Intent(Intent.ACTION_VIEW, Uri.parse(internship.getFacebook()));
+                                startActivity(openURL);
+                            }
+                        });
+                    }
+                }
+
                 try {
                     loadPhotos();
                     loadAttachments();
@@ -189,6 +232,9 @@ public class InternshipInfoFragment extends Fragment {
         addPhoto = getView().findViewById(R.id.currentInternship_addPhoto);
         photosLL = getView().findViewById(R.id.currentInternship_photos);
         addAttachmentTV = getView().findViewById(R.id.currentInternship_addAttachment);
+        instagramIV = getView().findViewById(R.id.currentInternship_instagram);
+        twitterIV = getView().findViewById(R.id.currentInternship_twitter);
+        facebookIV = getView().findViewById(R.id.currentInternship_facebook);
         completeButton = getView().findViewById(R.id.currentInternship_buttonComplete);
         attachmentLV = getView().findViewById(R.id.currentInternship_attachments);
         attachmentLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {

@@ -12,6 +12,9 @@ public class Internship {
     private String organization;
     private String email;
     private String phoneNumber;
+    private String instagram;
+    private String twitter;
+    private String facebook;
     private boolean active;
     private int imageCount;
 
@@ -93,6 +96,30 @@ public class Internship {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public String getInstagram() {
+        return instagram;
+    }
+
+    public void setInstagram(String instagram) {
+        this.instagram = instagram;
+    }
+
+    public String getTwitter() {
+        return twitter;
+    }
+
+    public void setTwitter(String twitter) {
+        this.twitter = twitter;
+    }
+
+    public String getFacebook() {
+        return facebook;
+    }
+
+    public void setFacebook(String facebook) {
+        this.facebook = facebook;
     }
 
     public boolean getActive() {

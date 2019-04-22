@@ -62,4 +62,8 @@
     <string name="confirm_password">Confirm password</string>
     <string name="request_administrator_rights">Request administrator rights</string>
     <string name="not_fulfilled">Not fulfilled</string>
+    <string name="social_networks">Social networks</string>
+    <string name="instagram">Instagram</string>
+    <string name="twitter">Twitter</string>
+    <string name="facebook">Facebook</string>
 </resources>

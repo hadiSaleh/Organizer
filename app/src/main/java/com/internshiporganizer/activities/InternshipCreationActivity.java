@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +28,9 @@ public class InternshipCreationActivity extends AppCompatActivity {
     private EditText organizationET;
     private EditText emailET;
     private EditText phoneET;
+    private TextView instagramET;
+    private TextView twitterET;
+    private TextView facebookET;
     private Button nextButton;
 
     @Override
@@ -43,6 +47,10 @@ public class InternshipCreationActivity extends AppCompatActivity {
         organizationET = findViewById(R.id.internshipCreation_organization);
         emailET = findViewById(R.id.internshipCreation_email);
         phoneET = findViewById(R.id.internshipCreation_phone);
+        instagramET = findViewById(R.id.internshipCreation_instagram);
+        twitterET = findViewById(R.id.internshipCreation_twitter);
+        facebookET = findViewById(R.id.internshipCreation_facebook);
+
 
         nextButton = findViewById(R.id.internshipCreation_buttonNext);
 
@@ -143,6 +151,9 @@ public class InternshipCreationActivity extends AppCompatActivity {
                 intent.putExtra("phone", phoneET.getText().toString());
                 intent.putExtra("startDate", startDate.getText().toString());
                 intent.putExtra("endDate", endDate.getText().toString());
+                intent.putExtra("instagram", instagramET.getText().toString());
+                intent.putExtra("twitter", twitterET.getText().toString());
+                intent.putExtra("facebook", facebookET.getText().toString());
                 startActivityForResult(intent, Constants.REQUEST_EXIT);
             }
         });
