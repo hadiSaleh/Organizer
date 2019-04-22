@@ -1,6 +1,7 @@
 package com.internshiporganizer.Adapters;
 
 import android.content.Context;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,9 +9,15 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.internshiporganizer.Entities.Employee;
 import com.internshiporganizer.R;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class EmployeeAdapter extends BaseAdapter {
@@ -51,6 +58,22 @@ public class EmployeeAdapter extends BaseAdapter {
         String name = p.getFirstName() + " " + p.getLastName();
         ((TextView) view.findViewById(R.id.textEmployeeName)).setText(name);
         ((TextView) view.findViewById(R.id.textEmployeeOffice)).setText(p.getCity());
+
+        final StorageReference mStorageRef = FirebaseStorage.getInstance().getReference();
+        final File localFile;
+        try {
+            localFile = File.createTempFile("img" + p.getId(), "jpg");
+
+            mStorageRef.child("images/employees/" + p.getId() + "/image.jpg").getFile(localFile)
+                    .addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                            photoIV.setImageURI(Uri.fromFile(localFile));
+                        }
+                    });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return view;
     }

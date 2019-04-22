@@ -33,6 +33,8 @@ import com.internshiporganizer.Entities.ChatMessage;
 import com.internshiporganizer.R;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -94,6 +96,14 @@ public class ChatFragment extends ListFragment {
                 message.setMessage(messageToSend);
                 message.setEmployeeId(myId);
                 message.setName(myName);
+
+                Calendar calendar = Calendar.getInstance();
+                final int year = calendar.get(Calendar.YEAR);
+                final int month = calendar.get(Calendar.MONTH);
+                final int day = calendar.get(Calendar.DAY_OF_MONTH);
+                final int hour = calendar.get(Calendar.HOUR);
+                final int minute = calendar.get(Calendar.MINUTE);
+                message.setDate(String.format("%d-%02d-%02d %02d:%02d", year, month, day, hour, minute));
 
                 final DatabaseReference dbRef = fDB.getReference("chat/" + internshipId + "/numberOfMessages");
                 dbRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -157,6 +167,7 @@ public class ChatFragment extends ListFragment {
                     chatMessage.setName((String) m.get("name"));
                     chatMessage.setEmployeeId((long) m.get("employeeId"));
                     chatMessage.setMessage((String) m.get("message"));
+                    chatMessage.setDate((String) m.get("date"));
 
                     messages.add(chatMessage);
                 }

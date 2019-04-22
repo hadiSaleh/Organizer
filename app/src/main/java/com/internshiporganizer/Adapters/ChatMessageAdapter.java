@@ -55,6 +55,14 @@ public class ChatMessageAdapter extends BaseAdapter {
             final TextView nick = view.findViewById(R.id.nick);
             nick.setText(m.getName());
             msg.setTextColor(Color.BLACK);
+
+            final TextView date = view.findViewById(R.id.message_date);
+            if (m.getDate() == null || m.getDate().equals("")){
+                date.setVisibility(View.GONE);
+            } else {
+                date.setText(m.getDate());
+            }
+
             return view;
         }
 
@@ -63,6 +71,13 @@ public class ChatMessageAdapter extends BaseAdapter {
         TextView msg = view.findViewById(R.id.message_text_sended);
         msg.setText(m.getMessage());
         msg.setTextColor(Color.BLACK);
+
+        final TextView date = view.findViewById(R.id.message_date);
+        if (m.getDate() == null || m.getDate().equals("")){
+            date.setVisibility(View.GONE);
+        } else {
+            date.setText(m.getDate());
+        }
 
         return view;
     }

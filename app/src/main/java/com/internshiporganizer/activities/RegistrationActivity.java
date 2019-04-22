@@ -110,6 +110,7 @@ public class RegistrationActivity extends AppCompatActivity {
                 employee.setLastName(secondName);
                 employee.setEmail(email);
                 employee.setCity(city);
+                employee.setAdministrator(requestAdmin);
                 employee.setPasswordHash(new String(Hex.encodeHex(DigestUtils.sha256(password))));
 
                 if (sharedPreferences.contains(Constants.FIREBASE_TOKEN)) {
